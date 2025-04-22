@@ -12,7 +12,20 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
   <title>Consulta de Becas</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta name="description" content="Buscador no oficial de estatus o becas de Benito Juarez, Rita Cetina, Etc">
+  <!-- Open Graph (para Facebook, WhatsApp, Discord, etc) -->
+  <meta property="og:title" content="Buscador de Becas/Estatus">
+  <meta property="og:description" content="Buscador no oficial de estatus o becas de Benito Juarez, Rita Cetina, Etc">
+  <meta property="og:image" content="https://consultarbeca.x10.mx/img/icons/tarjeta_bienestar_2.png">
+  <meta property="og:url" content="https://consultarbeca.x10.mx/">
+  <meta property="og:type" content="website">
 
+  <!-- Twitter Card (opcional, para Twitter/X) -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Buscador de Becas/Estatus">
+  <meta name="twitter:description" content="Buscador no oficial de estatus o becas de Benito Juarez, Rita Cetina, Etc">
+  <meta name="twitter:image" content="https://consultarbeca.x10.mx/img/icons/tarjeta_bienestar_2.png">
+  <meta name="twitter:url" content="https://consultarbeca.x10.mx/">
   <style>
     :root {
       --background-color: #f9f9f9;
@@ -704,6 +717,16 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
     }
 
 
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Buscador de Becas/Estatus",
+    "url": "https://consultarbeca.x10.mx/",
+    "description": "Buscador no oficial de estatus o becas de Benito Juarez, Rita Cetina, Etc",
+    "image": "https://consultarbeca.x10.mx/img/icons/tarjeta_bienestar_2.png"
+  }
   </script>
 
 </body>
