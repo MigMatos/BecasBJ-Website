@@ -93,11 +93,11 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
       color: #27ae60;
     }
 
-    .status-icon-becario.yellow{
+    .status-text-becario.yellow{
       color: #FFC700;
     }
 
-    .status-icon-becario.red{
+    .status-text-becario.red{
       color: #EB5757;
     }
 
@@ -240,7 +240,10 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
           <div><strong>Dirección de Adscripción:</strong> <span id="direccionads"></span></div>
         </div>
         <div class="bloque hidden" id="explicacionBaja">
+          <h3 class="status-text-becario red" style="font-size: xx-large;"><span id="etiquetaBaja"></span></h3>
+          <strong>Fecha de baja:</strong> <span id="fechaBaja"></span>
           <strong>Motivo de baja:</strong> <span id="motivoBaja"></span>
+          <strong>Fundamentación:</strong> <span id="motivoFundamentacion"></span>
         </div>
       </section>
 
@@ -253,10 +256,13 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
         </section>
       </div>
 
-      <section class="emisiones main-conteiner" id="contenedor-emisiones">
-        <!-- Emisiones dinámicas -->
+      <div class="info main-conteiner mt-4">
         <h1>Emisiones</h1>
-      </section>
+        <section class="emisiones" id="contenedor-emisiones">
+          <!-- Emisiones dinámicas -->
+        </section>
+      </div>
+
     </div>
 
     <!-- Footer -->
@@ -360,7 +366,7 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
       'EN REVISION': 'alert.svg',
       'CAMBIO DE TITULAR': 'alert.svg',
       'VERIFICACION RENAPO': 'alert.svg',
-      'BAJA': 'x-status-baja.svg'
+      'BAJA': 'baja.svg'
     };
 
     const colorStatusTXT = {
@@ -390,6 +396,9 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
       if (d.SITUACION_INSCRIPCION_ACTUAL === 'BAJA' && d.EXPLICACION_MOTIVO_BAJA) {
         document.getElementById('explicacionBaja').classList.remove('hidden');
         document.getElementById('motivoBaja').textContent = d.EXPLICACION_MOTIVO_BAJA;
+        document.getElementById('motivoFundamentacion').textContent = d.FUNDAMENTACION;
+        document.getElementById('etiquetaBaja').textContent = d.ETIQUETA_BAJA;
+        document.getElementById('fechaBaja').textContent = d.EJERCICIO_FISCAL_BAJA;
       }
 
       mostrarFasesBancarizacion(d);
@@ -397,6 +406,7 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
 
     function renderEmisiones() {
       const emisionesCont = document.getElementById('contenedor-emisiones');
+      emisionesCont.innerHTML = "";
       const datos = api.datos;
       const emisionesPorAnio = {};
 
@@ -414,6 +424,8 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
           emisionesPorAnio[anio][numero][tipo] = datos[key];
         }
       }
+
+      
 
       for (let anio in emisionesPorAnio) {
         let contenedorAnio = document.createElement('div');
@@ -452,43 +464,112 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
     function mostrarFasesBancarizacion(d) {
         const fasesContainer = document.querySelector("#bancarizacionContainer .bancarizacionfases");
         fasesContainer.innerHTML = ""; // Limpiar contenido previo
-
+        const fases = [];
+        let mostrarFase1 = true;
+        let mostrarFase2 = false;
+        let mostrarFase3 = false;
+        let alerta = "";
         // Mostrar alerta si aplica
         if (d.BANCARIZACION_RECHAZADA == 1 && d.PROGRAMA == "BUEEMS") {
-            const alerta = document.createElement("div");
+            alerta = document.createElement("div");
             alerta.className = "alert alert-warning mb-3";
             alerta.innerHTML = `
                 A partir de junio de 2024, revisa este apartado para saber cuándo y dónde recoger tu medio de pago.<br>
                 Lleva tu documentación completa. Si eres menor de edad, ve acompañado/a de tu tutor.
             `;
             fasesContainer.appendChild(alerta);
+            
+        } else if (d.BANCARIZACION_RECHAZADA == 0 && d.BANCARIZACION.length == 0) {
+            alerta = document.createElement("div");
+            alerta.className = "alert alert-danger mb-3";
+            alerta.innerHTML = `
+                No se está llevando a cabo ninguna bancarización.
+            `;
+            fasesContainer.appendChild(alerta);
+            mostrarFase1 = false;
+        } else if (d.BANCARIZACION == "PENDIENTE") {
+            alerta = document.createElement("div");
+            alerta.className = "alert alert-primary mb-3";
+            alerta.innerHTML = `
+              <b>¡Revisa constantemente este apartado!</b><br>
+              Aún no te hemos asignado una fecha de entrega y lugar de entrega, revisa constantemente este apartado.
+            `;
+            basesContainer.appendChild(alerta);
         }
 
-        const fases = [];
-        let mostrarFase2 = false;
-        let mostrarFase3 = false;
-
-        // FASE 1 (siempre que haya BANCARIZACION)
-        fases.push({
-            nombre: "PENDIENTE",
-            rutaIcono: "img/icons/relojalert.png",
-            activa: true,
-            i: 1
-        });
+        if(mostrarFase1) {
+          fases.push({
+              nombre: "PENDIENTE",
+              rutaIcono: "img/icons/relojalert.png",
+              activa: true,
+              i: 1
+          });
+        }
 
         if (Array.isArray(d.BANCARIZACION)) {
             for (const banco of d.BANCARIZACION) {
+                const ac = banco.AC; // No tengo idea de que es pero está asignado para una función
                 const medioPendiente = banco.DESC_EST_FORMZ_UPD;
                 const estrategia = banco.TIPO_ESTRATEGIA_DGOVAC;
                 const fechaHora = banco.FECHA_HORA;
+                const fechaHoraProgramada = banco.FECHA_PROGRAMADA;
+                const remesa = banco.NUMERO_REMESA;
+                const sucursal = banco.SUCURSAL;
+								const direccionSucursal = banco.DIRECCION_SUCURSAL;
+                let inFecha = "";
+                let longitudFechaBanco = "";
+                let fecha = "";
+                let hora = "";
 
                 const tieneFecha = fechaHora && fechaHora.trim() !== "";
+                if(tieneFecha){
+                    inFecha = fechaHora.indexOf(",");
+										lonFechaBanco = fechaHora.length;
+										fecha = fechaHora.substring(0, inFecha);
+										hora = fechaHora.substring(inFecha + 1, lonFechaBanco);
+                }
 
-                if (medioPendiente === "MEDIO PENDIENTE DE ENTREGAR" && estrategia === "SUCURSAL" && tieneFecha) {
+                if (medioPendiente === "MEDIO PENDIENTE DE ENTREGAR" && estrategia != "" && tieneFecha) {
                     mostrarFase2 = true;
+                    alerta = document.createElement("div");
+                    alerta.className = "alert alert-warning mb-3";
+                    alerta.innerHTML = `
+                        Tienes una fecha asignada para recoger tu tarjeta el día ${fecha} con horario de ${hora} para recoger por medio de ${sucursal} con dirección asignada en ${direccionSucursal}.<br>
+                        Remesas asignadas: ${remesa}<br>
+                        <b>¡RECUERDA LLEVAR TU DOCUMENTACION COMPLETA!</b> 
+                    `;
+                    fasesContainer.appendChild(alerta);
+                    
+                } else if (medioPendiente === "MEDIO PENDIENTE DE ENTREGAR" && !tieneFecha) {
+                  alerta = document.createElement("div");
+                  alerta.className = "alert alert-info mb-3";
+                  alerta.innerHTML = `
+                        ¡Tu tarjeta ya casi llega a tu localidad!
+                        <b>¡REVISA CONSTANTEMENTE PARA VER UNA FECHA ASIGNADA A LA ENTREGA DE TU TARJETA!</b> 
+                    `;
+                  fasesContainer.appendChild(alerta);
                 }
 
                 if (medioPendiente === "MEDIO ENTREGADO / FORMALIZADO") {
+                  if(ac == 2){
+                    alerta = document.createElement("div");
+                    alerta.className = "alert alert-danger mb-3";
+                    alerta.innerHTML = `
+                        <b>¡NECESITAS CAMBIAR TU NIP DE TU TARJETA DEL BANCO BIENESTAR!</b><br>
+                        ¡La dispersiones pendientes de tu beca no se activarán hasta realizar esta acción!<br>
+                        Deberás acudir a una ventanilla de atención el día ${fechaHoraProgramada} en la hora segerida de ${hora} horas de algún Banco Bienestar con tu tarjeta, identificación oficial y tu NIP actual que está impreso en el sobre donde recibiste tu Tarjeta Bienestar.
+                    `;
+                  } else {
+                    alerta = document.createElement("div");
+                    alerta.className = "alert alert-success mb-3";
+                    alerta.innerHTML = `
+                        <b>¡BANCARIZACIÓN COMPLETADA!</b><br>
+                        Conoce las próximas fechas de las becas a emitir en la sección de "EMISIONES"<br>
+                        Si necesitas consultar tu saldo o movimientos descarga la App Banco del Bienestar.
+                    `;
+                  }
+                    fasesContainer.appendChild(alerta);
+                    mostrarFase2 = true;
                     mostrarFase3 = true;
                 }
             }
