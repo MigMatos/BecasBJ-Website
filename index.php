@@ -191,6 +191,10 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
       margin-top: 5vh;
       margin-bottom: 15vh;
     }
+
+    .hiddensensibledata {
+      filter: blur(1vh) !important;
+    }
   </style>
 </head>
 
@@ -211,10 +215,19 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
     </div>
 
     <!-- Toggle de tema -->
-    <div class="text-end mb-3">
+    <div class="text-end mb-3" style="
+    display: flex;
+    gap: 5%;
+    flex-wrap: nowrap;
+    justify-content: center;
+    ">
       <div class="form-check form-switch"  style="display: flex; flex-direction: row;">
         <input class="form-check-input" type="checkbox" id="themeToggle" style="margin-right: 1vh;">
         <label class="form-check-label" for="themeToggle">Modo oscuro</label>
+      </div>
+      <div class="form-check form-switch"  style="display: flex; flex-direction: row;">
+        <input class="form-check-input" type="checkbox" id="sensibleData" style="margin-right: 1vh;">
+        <label class="form-check-label" for="sensibleData">Ocultar datos sensibles</label>
       </div>
     </div>
 
@@ -290,7 +303,10 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
         </section>
       </div>
 
+      
+
     </div>
+
 
     <!-- Footer -->
     <footer>
@@ -309,10 +325,10 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
   <script src='js/jquery-3.7.1.min.js' async defer></script>
 
   <script>
-    // Modo oscuro persistente
-    const toggle = document.getElementById('themeToggle');
     const html = document.documentElement;
     let api = {};
+    // Modo oscuro persistente
+    const toggle = document.getElementById('themeToggle');
     toggle.checked = localStorage.getItem('theme') === 'dark';
     html.setAttribute('data-theme', toggle.checked ? 'dark' : 'light');
 
@@ -321,6 +337,47 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
       html.setAttribute('data-theme', mode);
       localStorage.setItem('theme', mode);
     });
+
+    const togglesensibleData = document.getElementById('sensibleData');
+    let sensitiveDataState = null;
+
+    function applySensitiveDataState() {
+      const stored = localStorage.getItem('sensitivedata');
+      const state = stored === null ? false : stored === 'true'; // false por defecto (oculto)
+
+      const ids = "curpInput,curp,cct,nacimiento,periodo,integrante,direccionads,fechaBaja".split(",");
+      const elements = [...ids.map(id => document.getElementById(id)), ...document.querySelectorAll('[elem-type="sensibledata"]')];
+      elements.forEach(e => e?.classList.toggle("hiddensensibledata", state));
+
+      if (typeof togglesensibleData !== "undefined") {
+        togglesensibleData.checked = state;
+      }
+
+      if (stored === null) {
+        localStorage.setItem('sensitivedata', state);
+      }
+
+      sensitiveDataState = state;
+    }
+
+    function toggleSensitiveData() {
+      sensitiveDataState = !sensitiveDataState;
+      localStorage.setItem('sensitivedata', sensitiveDataState);
+
+      const ids = "curpInput,curp,cct,nacimiento,periodo,integrante,direccionads,fechaBaja".split(",");
+      const elements = [...ids.map(id => document.getElementById(id)), ...document.querySelectorAll('[elem-type="sensibledata"]')];
+      elements.forEach(e => e?.classList.toggle("hiddensensibledata", sensitiveDataState));
+
+      if (typeof togglesensibleData !== "undefined") {
+        togglesensibleData.checked = sensitiveDataState;
+      }
+
+      console.log("Sensitivedata changed:", sensitiveDataState);
+    }
+
+    applySensitiveDataState();
+    togglesensibleData.addEventListener('change', () => {toggleSensitiveData();});
+    
 
     window.addEventListener('load', () => {
         if (/Mobi|Android|iPhone|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent)) {
@@ -539,8 +596,8 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
               <span ${!em.FECHA_PAGO || em.FECHA_PAGO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Fecha de Pago:</b> ${em.FECHA_PAGO || 'N/A'}</span>
               <span ${!em.ESTATUS_PAGO || em.ESTATUS_PAGO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Situación actual del pago:</b> ${em.ESTATUS_PAGO || 'N/A'}</span>
               <span ${!em.PERIODOS || em.PERIODOS.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Periodos a pagar:</b> ${obtenerPeriodoTexto(anio,num,em.PERIODOS)}</span>
-              <span ${!em.FECHA_PROGRAMADA_SOT || em.FECHA_PROGRAMADA_SOT.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Fecha Programada:</b> ${em.FECHA_PROGRAMADA_SOT || 'N/A'}</span>
-              <span ${!em.DIR_PROGRAMADA_SOT || em.DIR_PROGRAMADA_SOT.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Dirección Programada:</b> ${em.DIR_PROGRAMADA_SOT || 'N/A'}</span>
+              <span elem-type="sensibledata" ${!em.FECHA_PROGRAMADA_SOT || em.FECHA_PROGRAMADA_SOT.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Fecha Programada:</b> ${em.FECHA_PROGRAMADA_SOT || 'N/A'}</span>
+              <span elem-type="sensibledata" ${!em.DIR_PROGRAMADA_SOT || em.DIR_PROGRAMADA_SOT.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Dirección Programada:</b> ${em.DIR_PROGRAMADA_SOT || 'N/A'}</span>
               
             </fieldset>
           `;
@@ -627,8 +684,8 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
                     alerta = document.createElement("div");
                     alerta.className = "alert alert-warning mb-3";
                     alerta.innerHTML = `
-                        Tienes una fecha asignada para recoger tu tarjeta el día ${fecha} con horario de ${hora} para recoger por medio de ${sucursal} con dirección asignada en ${direccionSucursal}.<br>
-                        Remesas asignadas: ${remesa}<br>
+                        Tienes una fecha asignada para recoger tu tarjeta el día <span elem-type="sensibledata">${fecha}</span> con horario de <span elem-type="sensibledata">${hora}</span> para recoger por medio de <span elem-type="sensibledata">${sucursal}</span> con dirección asignada en <span elem-type="sensibledata">${direccionSucursal}</span>.<br>
+                        Remesas asignadas: <span elem-type="sensibledata">${remesa}</span><br>
                         <b>¡RECUERDA LLEVAR TU DOCUMENTACION COMPLETA!</b> 
                     `;
                     fasesContainer.appendChild(alerta);
@@ -650,7 +707,7 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
                     alerta.innerHTML = `
                         <b>¡NECESITAS CAMBIAR TU NIP DE TU TARJETA DEL BANCO BIENESTAR!</b><br>
                         ¡La dispersiones pendientes de tu beca no se activarán hasta realizar esta acción!<br>
-                        Deberás acudir a una ventanilla de atención el día ${fechaHoraProgramada} en la hora segerida de ${hora} horas de algún Banco Bienestar con tu tarjeta, identificación oficial y tu NIP actual que está impreso en el sobre donde recibiste tu Tarjeta Bienestar.
+                        Deberás acudir a una ventanilla de atención el día <span elem-type="sensibledata">${fechaHoraProgramada}</span> en la hora segerida de <span elem-type="sensibledata">${hora}</span> horas de algún Banco Bienestar con tu tarjeta, identificación oficial y tu NIP actual que está impreso en el sobre donde recibiste tu Tarjeta Bienestar.
                     `;
                   } else {
                     alerta = document.createElement("div");
