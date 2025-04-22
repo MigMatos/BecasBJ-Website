@@ -1,7 +1,8 @@
 <?php
 include("./php/class/envloader.php");
 loadEnv(__DIR__ . '/.env'); 
-$siteKey = getenv('HCAPTCHA_KEY');
+$siteKey = $_ENV['HCAPTCHA_KEY'];
+
 ?>
 <html lang="es">
 
@@ -302,9 +303,12 @@ $siteKey = getenv('HCAPTCHA_KEY');
     const submitBtn = document.getElementById("submitBtn");
     const loading = document.getElementById('loadingMessage');
     const container = document.getElementById('apiDataContainer');
-    let hcaptchaVal = $('[name=h-captcha-response]').value;
+    let hcaptchaVal = "";
 
     submitBtn.addEventListener('click', async e => {
+
+      try {hcaptchaVal = document.querySelector('[name="h-captcha-response"]').value;}
+      catch(e){console.log(e);}
 
       if (!form.checkValidity()) {
           form.reportValidity();
@@ -327,7 +331,7 @@ $siteKey = getenv('HCAPTCHA_KEY');
               method: 'POST',
               body: new URLSearchParams(data),
           });
-          api = await response.json();
+          api = await response.text();
           console.log(api);
           if(api.status == "400"){
             alert(api.error);

@@ -7,7 +7,7 @@ header('Content-Type: application/json');
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $secret_key = getenv('HCAPTCHA_KEY');
+    $secret_key = $_ENV['ACCOUNT_SECRET'];
     $curp = strtoupper(trim($_POST['CURP']));
     if (empty($curp)) {
         echo json_encode([

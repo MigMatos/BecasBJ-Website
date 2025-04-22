@@ -3,11 +3,13 @@ function validarHCaptcha(string $token, string $secret): bool {
     if (empty($token)) return false;
 
     $remoteip = $_SERVER['REMOTE_ADDR'];
+
     $data = [
         'secret' => $secret,
         'response' => $token,
         'remoteip' => $remoteip
     ];
+
 
     $options = [
         'http' => [

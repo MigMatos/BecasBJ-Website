@@ -1,11 +1,15 @@
 <?php
 function loadEnv($path)
 {
-    if (!file_exists($path)) return;
+    if (!file_exists($path)) {
+        echo "WARNING: FILE ENV NO EXIST";
+        return;
+    }
 
     $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
     foreach ($lines as $line) {
+        
         $line = trim($line);
         // Ignorar comentarios y líneas sin '='
         if ($line === '' || str_starts_with($line, '#') || !str_contains($line, '=')) continue;
