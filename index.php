@@ -331,7 +331,7 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
               method: 'POST',
               body: new URLSearchParams(data),
           });
-          api = await response.text();
+          api = await response.json();
           console.log(api);
           if(api.status == "400"){
             alert(api.error);
