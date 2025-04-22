@@ -494,7 +494,7 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
               <b>¡Revisa constantemente este apartado!</b><br>
               Aún no te hemos asignado una fecha de entrega y lugar de entrega, revisa constantemente este apartado.
             `;
-            basesContainer.appendChild(alerta);
+            fasesContainer.appendChild(alerta);
         }
 
         if(mostrarFase1) {
