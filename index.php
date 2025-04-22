@@ -404,11 +404,11 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
           form.reportValidity();
           return;
       }
-      if (hcaptchaVal === "") {
+      // if (hcaptchaVal === "") {
 
-          alert("Porfavor completa el Captcha");
-          return;
-      }
+      //     alert("Porfavor completa el Captcha");
+      //     return;
+      // }
 
       loading.style.display = 'block';
 
@@ -424,8 +424,9 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
           api = await response.text();
           console.log(api);
           api = JSON.parse(api);
-          if(api.status == "400"){
-            alert(api.error);
+          if(api.status != "200"){
+            if(api.error == null || api.error == undefined || api.error == "") alert(api.message);
+            else alert(api.error);
             container.style.display = 'none';
             return;
           }
@@ -582,11 +583,22 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
 
         for (let num in emisiones) {
           const em = emisiones[num];
-          const tieneDatos = Object.values(em).some(v => v !== null && v !== '' && v !== '...');
-          if (!tieneDatos) continue;
+          console.log(anio);
+          console.log(num);
           console.log(em);
+          console.log("--------");
+          const tieneDatos = Object.values(em).some(v => v !== null && v !== '' && v !== '...');
+          if (!tieneDatos && parseInt(anio) === new Date().getFullYear()) {
+            contenedorAnio.innerHTML += `<fieldset class="bloque"><legend><strong>Emisión #${num}</strong></legend>
+                    <span>No tienes o aún no tienes asignado esta emisión con periodos de ${obtenerPeriodoTexto(anio,num,2)}.</span>
+                </fieldset>`;
+            continue; 
+          } else if (!tieneDatos) {continue};
+          
           if(em.PAGADO == "0") em.PAGADO = "NO PAGADO"; else em.PAGADO = "PAGADO";
-          if(em.EMISION_APOYO == null) continue
+          if(em.EMISION_APOYO == null && parseInt(anio) > 2023) {
+              continue;
+          }
 
           contenedorAnio.innerHTML += `
             <fieldset class="bloque"><legend><strong>Emisión #${num}</strong></legend>
