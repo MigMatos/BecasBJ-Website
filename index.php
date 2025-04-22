@@ -404,11 +404,11 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
           form.reportValidity();
           return;
       }
-      // if (hcaptchaVal === "") {
+      if (hcaptchaVal === "") {
 
-      //     alert("Porfavor completa el Captcha");
-      //     return;
-      // }
+          alert("Porfavor completa el Captcha");
+          return;
+      }
 
       loading.style.display = 'block';
 
