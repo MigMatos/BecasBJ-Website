@@ -111,6 +111,15 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
+      margin-left: 0.5em;
+      border-left: 0.25em solid var(--border);
+      padding-left: 1em;
+    }
+
+    #explicacionBaja {
+      margin-left: 0.5em;
+      border-left: 0.25em solid #EB5757;
+      padding-left: 1em;
     }
 
     .form-container {
@@ -134,7 +143,10 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
     .bloque > .span-object {
       display: list-item;
       list-style: circle;
-      margin-left: 3vh;
+      margin-left: 0.5em;
+      border-left: 0.25em solid #27ae60;
+      padding-left: 1em;
+      list-style: none;
     }
 
     header img {
@@ -147,6 +159,8 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
 
     footer {
       margin-top: 2em;
+      padding-top: 1em;
+      border-top: 0.36vh solid var(--border);
     }
 
     fieldset {
@@ -404,6 +418,69 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
       mostrarFasesBancarizacion(d);
     }
 
+    function obtenerPeriodoTexto(anio, emision, id) {
+        let texto = "";
+
+        // Conversión segura a cadena
+        id = String(id);
+        emision = parseInt(emision);
+        anio = parseInt(anio);
+
+        const mesesPorEmision = {
+          2023: {
+            1: ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO"],
+            2: ["MARZO", "ABRIL", "MAYO", "JUNIO"],
+            3: ["SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"]
+          },
+          2024: {
+            1: {
+              "-1": "MAYO 2019 a JUNIO 2024",
+              default: ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO"]
+            },
+            2: {
+              default: ["SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"]
+            }
+          },
+          2025: {
+            1: {
+              "-1": "MAYO 2019 a JUNIO 2024",
+              default: ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO"]
+            },
+            2: {
+              default: ["MARZO", "ABRIL", "MAYO", "JUNIO"]
+            },
+            3: {
+              default: ["MAYO", "JUNIO", "JULIO", "AGOSTO"]
+            }
+          }
+        };
+
+        const datosAnio = mesesPorEmision[anio];
+        if (!datosAnio || !datosAnio[emision]) return "";
+
+        const datosEmision = datosAnio[emision];
+
+        if (typeof datosEmision === "object" && !Array.isArray(datosEmision)) {
+          if (id === "-1" && datosEmision["-1"]) {
+            return datosEmision["-1"];
+          } else if (datosEmision.default) {
+            let index = parseInt(id) - 1;
+            if (index >= 0 && index < datosEmision.default.length) {
+              texto = datosEmision.default.slice(0, index + 1).join(", ");
+              return texto;
+            }
+          }
+        } else if (Array.isArray(datosEmision)) {
+          let index = parseInt(id) - 1;
+          if (index >= 0 && index < datosEmision.length) {
+            texto = datosEmision.slice(0, index + 1).join(", ");
+            return texto;
+          }
+        }
+
+        return "";
+      }
+
     function renderEmisiones() {
       const emisionesCont = document.getElementById('contenedor-emisiones');
       emisionesCont.innerHTML = "";
@@ -443,14 +520,15 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
 
           contenedorAnio.innerHTML += `
             <fieldset class="bloque"><legend><strong>Emisión #${num}</strong></legend>
-              <span ${!em.FORMA_ENTREGA_APOYO || em.FORMA_ENTREGA_APOYO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Forma Entrega:</b> ${em.FORMA_ENTREGA_APOYO || 'N/A'}</span>
-              <span ${!em.INSTITUCION_LIQUIDADORA || em.INSTITUCION_LIQUIDADORA.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Institución:</b> ${em.INSTITUCION_LIQUIDADORA || 'N/A'}</span>
-              <span ${!em.PAGADO || em.PAGADO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Pagado:</b> ${em.PAGADO || 'N/A'}</span>
+              <span ${!em.FORMA_ENTREGA_APOYO || em.FORMA_ENTREGA_APOYO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Forma de pago:</b> ${em.FORMA_ENTREGA_APOYO || 'N/A'}</span>
+              <span ${!em.INSTITUCION_LIQUIDADORA || em.INSTITUCION_LIQUIDADORA.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Recibirás el pago en medio de:</b> ${em.INSTITUCION_LIQUIDADORA || 'N/A'}</span>
+              <span ${!em.PAGADO || em.PAGADO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Pago de la emisión efectuado:</b> ${em.PAGADO || 'N/A'}</span>
               <span ${!em.FECHA_PAGO || em.FECHA_PAGO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Fecha de Pago:</b> ${em.FECHA_PAGO || 'N/A'}</span>
-              <span ${!em.PERIODOS || em.PERIODOS.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Periodos:</b> ${em.PERIODOS || 'N/A'}</span>
-              <span ${!em.ESTATUS_PAGO || em.ESTATUS_PAGO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Estatus:</b> ${em.ESTATUS_PAGO || 'N/A'}</span>
+              <span ${!em.ESTATUS_PAGO || em.ESTATUS_PAGO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Situación actual del pago:</b> ${em.ESTATUS_PAGO || 'N/A'}</span>
+              <span ${!em.PERIODOS || em.PERIODOS.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Periodos a pagar:</b> ${obtenerPeriodoTexto(anio,num,em.PERIODOS)}</span>
               <span ${!em.FECHA_PROGRAMADA_SOT || em.FECHA_PROGRAMADA_SOT.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Fecha Programada:</b> ${em.FECHA_PROGRAMADA_SOT || 'N/A'}</span>
-              <span ${!em.DIR_PROGRAMADA_SOT || em.DIR_PROGRAMADA_SOT.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Dirección Programada:</b> ${em.DIR_PROGRAMADA_SOT || 'N/A'}
+              <span ${!em.DIR_PROGRAMADA_SOT || em.DIR_PROGRAMADA_SOT.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Dirección Programada:</b> ${em.DIR_PROGRAMADA_SOT || 'N/A'}</span>
+              
             </fieldset>
           `;
         }
@@ -460,6 +538,8 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
         }
       }
     }
+
+
 
     function mostrarFasesBancarizacion(d) {
         const fasesContainer = document.querySelector("#bancarizacionContainer .bancarizacionfases");
