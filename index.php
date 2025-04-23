@@ -271,6 +271,7 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
         </section>
         <div><strong>Programa:</strong> <span id="programa"></span></div>
         <div><strong>CURP del beneficiario:</strong> <span id="curp"></span></div>
+        <div><strong>NOTA: </strong> Tu información puede estar NO ACTUALIZADA, esto puede tardar días, semanas o meses en actualizarse por la Coordinación de Becas Benito Juárez.</div>
       </section>
 
       <section class="info main-conteiner">
