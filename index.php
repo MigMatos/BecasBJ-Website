@@ -342,7 +342,7 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
           <b>¡HOLA! Soy un universitario (igual que posiblemente tú), así que nada de aquí es perfecto, posiblemente falte algo o alguna información sea erronea.</b><br>
           Si usted sabe programar y desea apoyar a mejorarlo sin recibir ningún apoyo monetario más que apoyar a los jóvenes estudiantes, puedes hacer hacerlo dando <a href="https://github.com/MigMatos/BecasBJ-Website">click aquí</a>. <i>(¡Viva el código libre!)</i><br>
           <b>Si deseas contactarme personalmente este es mi correo (o agradecerme igual es válido jaja): <a href="mailto:matitos2317@gmail.com">matitos2317@gmail.com</a></b><br>
-          <b>Si necesitas ayuda sobre información de tu BECA o ESTATUS: <a href="mailto:atencion@becasbenitojuarez.gob.mx">atencion@becasbenitojuarez.gob.mx</a></b><br>
+          <b>Si necesitas ayuda sobre información de tu BECA o ESTATUS: Llama al número 55 1162 0300 o envía un correo a <a href="mailto:atencion@becasbenitojuarez.gob.mx">atencion@becasbenitojuarez.gob.mx</a></b><br>
           <br><h3>TODO ACERCA DEL SITIO WEB</h3></b><br>
           Este sitio web está creado por situación INFORMATIVA ajeno a cualquier partido político o empresa.<br>
           <b>Por obvias razones, este sitio web RECOPILA TU INFORMACIÓN para OBTENER TU INFORMACIÓN DE ESTATUS pero NO LO GUARDAMOS, TODO ES PRIVADO Y CONFIDENCIAL.<br>
