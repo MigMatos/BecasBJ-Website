@@ -9,21 +9,21 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consulta de Becas</title>
+  <title>Buscador Becas Benito Juárez - NO OFICIAL</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <meta name="description" content="Buscador no oficial de estatus o becas de Benito Juarez, Rita Cetina, Etc">
+  <meta name="description" content="Buscador NO OFICIAL de estatus o becas de Benito Juarez, Rita Cetina, Etc">
   <!-- Open Graph (para Facebook, WhatsApp, Discord, etc) -->
-  <meta property="og:title" content="Buscador de Becas/Estatus">
-  <meta property="og:description" content="Buscador no oficial de estatus o becas de Benito Juarez, Rita Cetina, Etc">
+  <meta property="og:title" content="Buscador Becas Benito Juárez - NO OFICIAL">
+  <meta property="og:description" content="Buscador NO OFICIAL de estatus o becas de Benito Juarez, Rita Cetina, Etc">
   <meta property="og:image" content="https://consultarbeca.x10.mx/img/icons/tarjeta_bienestar_2.png">
   <meta property="og:url" content="https://consultarbeca.x10.mx/">
   <meta property="og:type" content="website">
 
   <!-- Twitter Card (opcional, para Twitter/X) -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Buscador de Becas/Estatus">
-  <meta name="twitter:description" content="Buscador no oficial de estatus o becas de Benito Juarez, Rita Cetina, Etc">
+  <meta name="twitter:title" content="Buscador Becas Benito Juárez - NO OFICIAL">
+  <meta name="twitter:description" content="Buscador NO OFICIAL de estatus o becas de Benito Juarez, Rita Cetina, Etc">
   <meta name="twitter:image" content="https://consultarbeca.x10.mx/img/icons/tarjeta_bienestar_2.png">
   <meta name="twitter:url" content="https://consultarbeca.x10.mx/">
   <style>
@@ -318,11 +318,12 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
     <footer id="seccion1footer">
           <b>¡HOLA! Soy un universitario (igual que posiblemente tú), así que nada de aquí es perfecto, posiblemente falte algo o alguna información sea erronea.</b><br>
           Si usted sabe programar y desea apoyar a mejorarlo sin recibir ningún apoyo monetario más que apoyar a los jóvenes estudiantes, puedes hacer hacerlo dando <a href="https://github.com/MigMatos/BecasBJ-Website">click aquí</a>. <i>(¡Viva el código libre!)</i><br>
-          <b>Si deseas contactarme personalmente este es mi correo: <a href="mailto:matitos2317@gmail.com">matitos2317@gmail.com</a></b><br>
+          <b>Si deseas contactarme personalmente este es mi correo (o agradecerme igual es válido jaja): <a href="mailto:matitos2317@gmail.com">matitos2317@gmail.com</a></b><br>
+          <b>Si necesitas ayuda sobre información de tu BECA o ESTATUS: <a href="mailto:atencion@becasbenitojuarez.gob.mx">atencion@becasbenitojuarez.gob.mx</a></b><br>
           <br><h3>TODO ACERCA DEL SITIO WEB</h3></b><br>
           Este sitio web está creado por situación INFORMATIVA ajeno a cualquier partido político o empresa.<br>
           <b>Por obvias razones, este sitio web RECOPILA TU INFORMACIÓN para OBTENER TU INFORMACIÓN DE ESTATUS pero NO LO GUARDAMOS, TODO ES PRIVADO Y CONFIDENCIAL.<br>
-          Al ser prohibido recopilar datos ajenos a tu persona sin autorización, ¡esto podría bloquearte de este sitio web!</b>
+          Está prohibido recopilar datos ajenos a tu persona sin autorización, si alguien reporta un mal uso, ¡esto podría bloquearte de este sitio web!</b>
           <br>
           <br><h3>HISTORIA DEL SITIO WEB</h3></b><br>
           Este sitio web fue creado desde que irresponsablemente por la coordinación de Becas Benito Juarez dejó en mantenimiento el sitio web, dejando sin información a los nuevos integrantes/reintegrantes becarios sin la información acerca de sus tarjetas, citas, etc. por más de un MES, eso es demasiado tiempo.<br>
