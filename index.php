@@ -211,7 +211,9 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
 
     <!-- Mensaje informativo superior -->
     <div class="alert alert-info text-center">
-      Consulta el calendario de pagos dando <a href="https://www.gob.mx/becasbenitojuarez/articulos/calendario-de-pago-segundo-bimestre-2025-becas-para-el-bienestar" target="_blank">click aquí</a>
+      <b>Este sitio web NO ES OFICIAL y no SUPLANTA al buscador de estatus oficial.</b><br>
+      <a href="#seccion1footer">Lea más acerca de mí y este sitio web aquí</a><br>
+      <b>Consulta el calendario de pagos dando <a href="https://www.gob.mx/becasbenitojuarez/articulos/calendario-de-pago-segundo-bimestre-2025-becas-para-el-bienestar" target="_blank">click aquí</a></b>
     </div>
 
     <!-- Toggle de tema -->
@@ -237,14 +239,18 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
         <div class="mb-3">
           <h3 for="curpInput" class="form-label"><b>Escribe tu CURP</b></h3>
           <span class="form-text-curp">¿No conoces tu CURP? <a href="https://www.gob.mx/curp/" target="_blank">Consulta tu CURP aquí.</a></span>
-          <input type="text" name="CURP" id="curpInput" class="form-control" maxlength="18" required
-            style="text-transform: uppercase;" pattern="^[A-Z0-9]{18}$"
-            title="Ingresa una CURP válida de 18 caracteres (solo letras y números)">
+          <input type="text" name="CURP" id="curpInput" pattern="^[A-Za-z0-9]{18}$" class="form-control" minlength="18" maxlength="18" required
+            style="text-transform: uppercase;"
+            title="Ingresa una CURP válida de 18 caracteres (solo letras y números)"
+            oninput="this.value = this.value.replace(/\s/g, '')">
         </div>
 
         <div class="mb-3" style="display: flex;justify-content: center;">
           <div class="h-captcha" data-sitekey="<?= $siteKey ?>"></div>
         </div>
+
+        <!-- Mensaje de errores, ya que alert es feo XD -->
+        <div class="alert alert-danger text-center hidden" id="errorAlertDiv"></div>
 
         <button id="submitBtn" type="button" class="btn btn-primary w-100">Buscar</button>
       </form>
@@ -309,14 +315,20 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
 
 
     <!-- Footer -->
-    <footer>
-          <b>Ningún dato de este sitio es recopilado, ¡darle un mal uso podría bloquearte de seguir usandolo!</b>
+    <footer id="seccion1footer">
+          <b>¡HOLA! Soy un universitario (igual que posiblemente tú), así que nada de aquí es perfecto, posiblemente falte algo o alguna información sea erronea.</b><br>
+          Si usted sabe programar y desea apoyar a mejorarlo sin recibir ningún apoyo monetario más que apoyar a los jóvenes estudiantes, puedes hacer hacerlo dando <a href="https://github.com/MigMatos/BecasBJ-Website">click aquí</a>. <i>(¡Viva el código libre!)</i><br>
+          <b>Si deseas contactarme personalmente este es mi correo: <a href="mailto:matitos2317@gmail.com">matitos2317@gmail.com</a></b><br>
+          <br><h3>TODO ACERCA DEL SITIO WEB</h3></b><br>
+          Este sitio web está creado por situación INFORMATIVA ajeno a cualquier partido político o empresa.<br>
+          <b>Por obvias razones, este sitio web RECOPILA TU INFORMACIÓN para OBTENER TU INFORMACIÓN DE ESTATUS pero NO LO GUARDAMOS, TODO ES PRIVADO Y CONFIDENCIAL.<br>
+          Al ser prohibido recopilar datos ajenos a tu persona sin autorización, ¡esto podría bloquearte de este sitio web!</b>
           <br>
+          <br><h3>HISTORIA DEL SITIO WEB</h3></b><br>
           Este sitio web fue creado desde que irresponsablemente por la coordinación de Becas Benito Juarez dejó en mantenimiento el sitio web, dejando sin información a los nuevos integrantes/reintegrantes becarios sin la información acerca de sus tarjetas, citas, etc. por más de un MES, eso es demasiado tiempo.<br>
-          Soy un universitario (igual que posiblemente tú), así que nada de aquí es perfecto, posiblemente falte algo o alguna información sea erronea.<br>
-          Si usted sabe programar y desea apoyar a mejorarlo sin recibir ningún apoyo monetario más que apoyar a los jóvenes estudiantes, puedes hacer hacerlo dando <a href="https://github.com/MigMatos/BecasBJ-Website">click aquí</a>. <i>(¡Viva el código libre!)</i>
+
           <br>
-          <b>Si deseas contactarme personalmente este es mi correo: <a href="mailto:matitos2317@gmail.com">matitos2317@gmail.com</a></b>
+          
     </footer>
 
   </div>
@@ -393,6 +405,8 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
     const submitBtn = document.getElementById("submitBtn");
     const loading = document.getElementById('loadingMessage');
     const container = document.getElementById('apiDataContainer');
+    const errorBox = document.getElementById('errorAlertDiv');
+
     let hcaptchaVal = "";
 
     submitBtn.addEventListener('click', async e => {
@@ -405,8 +419,9 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
           return;
       }
       if (hcaptchaVal === "") {
-
-          alert("Porfavor completa el Captcha");
+          errorBox.classList.remove("hidden");
+          errorBox.innerHTML = "<b>Porfavor, resuelve el Captcha</b>";
+          // alert("Porfavor completa el Captcha");
           return;
       }
 
@@ -425,17 +440,25 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
           console.log(api);
           api = JSON.parse(api);
           if(api.status != "200"){
-            if(api.error == null || api.error == undefined || api.error == "") alert(api.message);
-            else alert(api.error);
+            if(api.error == null || api.error == undefined || api.error == "") {
+              errorBox.classList.remove("hidden");
+              errorBox.innerHTML = `<b>${api.message}</b>`;
+            } else {
+              errorBox.classList.remove("hidden");
+              errorBox.innerHTML = `<b>${api.error}</b>`;
+            }
             container.style.display = 'none';
             return;
           }
           renderInfo();
           renderEmisiones();
           container.style.display = 'block';
+          errorBox.classList.add("hidden");
           const objetivo = document.getElementById("loadingMessage"); if (objetivo) objetivo.scrollIntoView({ behavior: "smooth" });
       } catch (err) {
-          alert("Error al consultar datos. Intenta nuevamente.");
+          errorBox.classList.remove("hidden");
+          errorBox.innerHTML = "<b>Ocurrió un error al consultar tus datos, posiblemente hay algún problema con la página de becabenitojuarez.gob.mx o mantenimiento.</b>";
+          // alert("Error al consultar datos. Intenta nuevamente.");
           container.style.display = 'none';
           console.error(err)
       } finally {

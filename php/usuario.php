@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($curp)) {
         echo json_encode([
             'status' => 400,
-            'error' => 'CURP no proporcionado'
+            'error' => 'No has proporcionado una CURP'
         ]);
         exit();
     }
@@ -20,14 +20,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($token)) {
         echo json_encode([
             'status' => 400,
-            'error' => 'CAPTCHA no resuelto'
+            'error' => 'Porfavor, resuelve el Captcha'
         ]);
         exit();
     }
     if(!validarHCaptcha($token, $secret_key)) {
         echo json_encode([
             'status' => 400,
-            'error' => 'CAPTCHA sin validación'
+            'error' => 'Actualiza la página y resuelve el Captcha'
         ]);
         exit();  
     }
@@ -36,7 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode([
         'status' => 400,
-        'error' => 'Método no aceptado'
+        'error' => 'Método no aceptado',
+        'alt' => "No sé que intentas pero ¡HOLA!", // Esto no debería verse, che webscrippers
     ]);
     exit();
 }
