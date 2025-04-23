@@ -864,16 +864,7 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
 
 
   </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Buscador de Becas/Estatus",
-    "url": "https://consultarbeca.x10.mx/",
-    "description": "Buscador no oficial de estatus o becas de Benito Juarez, Rita Cetina, Etc",
-    "image": "https://consultarbeca.x10.mx/img/icons/tarjeta_bienestar_2.png"
-  }
-  </script>
+  <!-- Ya no es necesario el script borrado, la index para otras páginas esta en el HEAD, así hay más control sobre los meta-tags -->
 
 </body>
 
