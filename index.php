@@ -135,6 +135,12 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
       padding-left: 1em;
     }
 
+    #explicacionAny {
+      margin-left: 0.5em;
+      border-left: 0.25em solid #FFC700;
+      padding-left: 1em;
+    }
+
     .form-container {
       max-width: 500px;
       margin: auto;
@@ -194,6 +200,17 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
 
     .hiddensensibledata {
       filter: blur(1vh) !important;
+    }
+
+    .pre-title {
+      display: flex;
+      align-items: center;
+      gap: 1vh;
+    }
+
+    .icons-conteiner {
+      height: auto;
+      width: 6vh;
     }
   </style>
 </head>
@@ -266,16 +283,16 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
     <div id="apiDataContainer" style="display: none;" class="mt-4">
       <section class="info main-conteiner">
         <section class="icons">
-          <img id="iconbeca" src="" alt="Icono de beca">
+          <img id="iconbeca" src="img/becaicons/DEFAULT.jpg" alt="Icono de beca">
           <div class="estado" id="estado"></div>
         </section>
         <div><strong>Programa:</strong> <span id="programa"></span></div>
         <div><strong>CURP del beneficiario:</strong> <span id="curp"></span></div>
-        <div><strong>NOTA: </strong> Tu información puede estar NO ACTUALIZADA, esto puede tardar días, semanas o meses en actualizarse por la Coordinación de Becas Benito Juárez.</div>
+        <div><strong>NOTA: </strong> Tu información podría no estar actualizada (esto quiere decir que no todos los beneficiarios tienen este problema), esto puede tardar días, semanas o meses en actualizarse por la Coordinación de Becas Benito Juárez.</div>
       </section>
 
       <section class="info main-conteiner">
-        <h2>Información General</h2><br>
+        <h2 class="pre-title"><img class="icons-conteiner" src="img/icons/becario.svg"> Información del becario</h2><br>
         <div class="grid">
           <!-- <div><strong>Programa:</strong> <span id="programa"></span></div> -->
           <div><strong>CCT:</strong> <span id="cct"></span></div>
@@ -292,11 +309,16 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
           <strong>Motivo de baja:</strong> <span id="motivoBaja"></span>
           <strong>Fundamentación:</strong> <span id="motivoFundamentacion"></span>
         </div>
+        <div class="bloque hidden" id="explicacionAny">
+          <h3 class="status-text-becario yellow" style="font-size: xx-large;"><span id="etiquetaAlerta"></span></h3>
+          <strong><span id="textoAlerta"></span></strong> <br>
+          <strong class="hidden" id="textoAlertaBUZON">¡Revisa tu buzón de mensajes, ahi recibirás seguimiento a tu caso!</strong> 
+        </div>
       </section>
 
       <div id="bancarizacionContainer" class="mt-4">
         <section class="info main-conteiner">
-          <h1 class="mb-3">Bancarización</h1>
+          <h2 class="pre-title"><img class="icons-conteiner" src="img/icons/bancarizacion.svg"> Bancarización</h2>
           <div class="bancarizacionfases p-3 border rounded">
               <!-- Aquí se insertarán dinámicamente las fases -->
           </div>
@@ -304,7 +326,7 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
       </div>
 
       <div class="info main-conteiner mt-4">
-        <h1>Emisiones</h1>
+        <h2 class="pre-title"><img class="icons-conteiner" src="img/icons/becasemitidas.svg"> Becas emitidas</h2>
         <section class="emisiones" id="contenedor-emisiones">
           <!-- Emisiones dinámicas -->
         </section>
@@ -492,10 +514,10 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
 
     function renderInfo() {
       const d = api.datos;
+      let SITUACION_TXT_FINAL = "SIN DATOS";
       document.getElementById('curp').textContent = d.CURP;
       document.getElementById('integrante').textContent = d.INTEGRANTE_ID;
-      document.getElementById('iconbeca').setAttribute("src",`img/becaicons/${d.PROGRAMA || ''}.jpg`);
-      document.getElementById('estado').innerHTML = `<img src="img/icons/${estadoIcons[d.SITUACION_INSCRIPCION_ACTUAL] || 'alert.svg'}" class="status-icon-becario"><span class="status-text-becario ${colorStatusTXT[d.SITUACION_INSCRIPCION_ACTUAL] || 'yellow'}">${d.SITUACION_INSCRIPCION_ACTUAL}</span>`;
+      document.getElementById('iconbeca').setAttribute("src",`img/becaicons/${d.PROGRAMA || 'DEFAULT'}.jpg`);
       document.getElementById('programa').textContent = programas[d.PROGRAMA] || 'Beca Desconocida';
       document.getElementById('cct').textContent = d.CCT;
       document.getElementById('nacimiento').textContent = d.FECHA_NACIMIENTO_BECARIO;
@@ -503,13 +525,43 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
       document.getElementById('totalPagos').textContent = d.TOTAL_PAGOS;
       document.getElementById('maximoPagos').textContent = d.MAXIMO_PAGOS;
       document.getElementById('direccionads').textContent = d.DIRECCION_ADSCRIPCION;
-      if (d.SITUACION_INSCRIPCION_ACTUAL === 'BAJA' && d.EXPLICACION_MOTIVO_BAJA) {
-        document.getElementById('explicacionBaja').classList.remove('hidden');
-        document.getElementById('motivoBaja').textContent = d.EXPLICACION_MOTIVO_BAJA;
-        document.getElementById('motivoFundamentacion').textContent = d.FUNDAMENTACION;
-        document.getElementById('etiquetaBaja').textContent = d.ETIQUETA_BAJA;
-        document.getElementById('fechaBaja').textContent = d.EJERCICIO_FISCAL_BAJA;
+      if (d.SITUACION_INSCRIPCION_ACTUAL === 'BAJA') {
+        if(d.EXPLICACION_MOTIVO_BAJA) {
+          document.getElementById('explicacionBaja').classList.remove('hidden');
+          document.getElementById('motivoBaja').textContent = d.EXPLICACION_MOTIVO_BAJA;
+          document.getElementById('motivoFundamentacion').textContent = d.FUNDAMENTACION;
+          document.getElementById('etiquetaBaja').textContent = d.ETIQUETA_BAJA;
+          document.getElementById('fechaBaja').textContent = d.EJERCICIO_FISCAL_BAJA;
+        }
+        SITUACION_TXT_FINAL = "BAJA"
+      } else if(d.SITUACION_INSCRIPCION_ACTUAL == 'CAMBIO TITULAR') {
+        SITUACION_TXT_FINAL = "CAMBIO DE TITULAR"
+        document.getElementById('explicacionAny').classList.remove('hidden');
+        document.getElementById('textoAlerta').textContent = "Está pendiente una revisión y actualización del representante de tu familiar o tutor.";
+        document.getElementById('textoAlertaBUZON').classList.remove('hidden');
+      } else if(d.SITUACION_INSCRIPCION_ACTUAL == 'VERIFICACION RENAPO') {
+        SITUACION_TXT_FINAL = "VERIFICACION DE RENAPO"
+        document.getElementById('explicacionAny').classList.remove('hidden');
+        document.getElementById('textoAlerta').textContent = "Está pendiente una revisión y validación de tu CURP con RENAPO.";
+        document.getElementById('textoAlertaBUZON').classList.remove('hidden');
+      } else if(d.SITUACION_INSCRIPCION_ACTUAL == 'EN REVISION') {
+        SITUACION_TXT_FINAL = "EN REVISION"
+        document.getElementById('explicacionAny').classList.remove('hidden');
+        document.getElementById('textoAlerta').textContent = "Está pendiente una revisión de tu información o solicitud.";
+        document.getElementById('textoAlertaBUZON').classList.remove('hidden');
+      } else if(d.SITUACION_INSCRIPCION_ACTUAL == 'ACTIVA') {
+        SITUACION_TXT_FINAL = "ACTIVA"
+      } else {
+        SITUACION_TXT_FINAL = d.SITUACION_INSCRIPCION_ACTUAL;
+
+        // Si se vuelve a consultar una CURP, esto actualiza los datos
+        document.getElementById('textoAlertaBUZON').classList.add('hidden');
+        document.getElementById('explicacionBaja').classList.add('hidden');
+        document.getElementById('explicacionAny').classList.add('hidden');
       }
+
+      // Mostrar al final debido al nuevo render de situación
+      document.getElementById('estado').innerHTML = `<img src="img/icons/${estadoIcons[d.SITUACION_INSCRIPCION_ACTUAL] || 'alert.svg'}" class="status-icon-becario"><span class="status-text-becario ${colorStatusTXT[d.SITUACION_INSCRIPCION_ACTUAL] || 'yellow'}">${SITUACION_TXT_FINAL}</span>`;
 
       mostrarFasesBancarizacion(d);
     }
@@ -613,7 +665,7 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
           console.log(em);
           console.log("--------");
           const tieneDatos = Object.values(em).some(v => v !== null && v !== '' && v !== '...');
-          if (!tieneDatos && parseInt(anio) === new Date().getFullYear()) {
+          if (!tieneDatos && parseInt(anio) === new Date().getFullYear() || tieneDatos && (em.EMISION_APOYO == null && parseInt(anio) > 2023)) {
             contenedorAnio.innerHTML += `<fieldset class="bloque"><legend><strong>Emisión #${num}</strong></legend>
                     <span>No tienes o aún no tienes asignado esta emisión con periodos de ${obtenerPeriodoTexto(anio,num,2)}.</span>
                 </fieldset>`;
@@ -621,9 +673,9 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
           } else if (!tieneDatos) {continue};
           
           if(em.PAGADO == "0") em.PAGADO = "NO PAGADO"; else em.PAGADO = "PAGADO";
-          if(em.EMISION_APOYO == null && parseInt(anio) > 2023) {
-              continue;
-          }
+          // if(em.EMISION_APOYO == null && parseInt(anio) > 2023) {
+          //     continue;
+          // }
 
           contenedorAnio.innerHTML += `
             <fieldset class="bloque"><legend><strong>Emisión #${num}</strong></legend>
@@ -751,7 +803,7 @@ $siteKey = $_ENV['HCAPTCHA_KEY'];
                     alerta.className = "alert alert-success mb-3";
                     alerta.innerHTML = `
                         <b>¡BANCARIZACIÓN COMPLETADA!</b><br>
-                        Conoce las próximas fechas de las becas a emitir en la sección de "EMISIONES"<br>
+                        Conoce las próximas fechas de las becas a emitir en la sección de "Becas Emitidas"<br>
                         Si necesitas consultar tu saldo o movimientos descarga la App Banco del Bienestar.
                     `;
                   }
