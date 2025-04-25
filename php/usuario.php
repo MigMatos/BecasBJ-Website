@@ -8,7 +8,10 @@ header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $secret_key = $_ENV['ACCOUNT_SECRET'];
-    $curp = strtoupper(trim($_POST['CURP']));
+    $curp = strtoupper(trim($_POST['CURP'] ?? ''));
+    $token = $_POST['h-captcha-response'] ?? '';
+    $data = [];
+
     if (empty($curp)) {
         echo json_encode([
             'status' => 400,
@@ -16,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         exit();
     }
-    $token = $_POST['h-captcha-response'] ?? '';
     if (empty($token)) {
         echo json_encode([
             'status' => 400,
@@ -31,7 +33,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         exit();  
     }
-    $data = getwrapperJSON($curp);
+    // Lo dejamos de ultimo, asi evitamos sobrecargar la API y que el Captcha haga su trabajo jsjs
+    $data = getBecasJSON($curp);
+    if(!$data || empty($data)){
+        echo json_encode([
+            'status' => 400,
+            'error' => 'No hay datos o no está funcionando actualmente el sitio web para obtener tu información.'
+        ]);
+        exit();  
+    }
+
     echo json_encode($data);
 } else {
     echo json_encode([

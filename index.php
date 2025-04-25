@@ -1,870 +1,259 @@
 <?php
-include("./php/class/envloader.php");
-loadEnv(__DIR__ . '/.env'); 
-$siteKey = $_ENV['HCAPTCHA_KEY'];
-
+    include("./php/class/envloader.php");
+    loadEnv(__DIR__ . '/.env');
+    $siteKey = strval($_ENV['HCAPTCHA_KEY']);
+    $siteVersion = strval($_ENV['VERSION']); // No olvidar cambiar esto en git xD
 ?>
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Buscador Becas Benito Juárez - NO OFICIAL</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <meta name="description" content="Buscador NO OFICIAL de estatus o becas de Benito Juarez, Rita Cetina, Etc">
-  <!-- Open Graph (para Facebook, WhatsApp, Discord, etc) -->
-  <meta property="og:title" content="Buscador Becas Benito Juárez - NO OFICIAL">
-  <meta property="og:description" content="Buscador NO OFICIAL de estatus o becas de Benito Juarez, Rita Cetina, Etc">
-  <meta property="og:image" content="https://consultarbeca.x10.mx/img/icons/tarjeta_bienestar_2.png">
-  <meta property="og:url" content="https://consultarbeca.x10.mx/">
-  <meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Twitter Card (opcional, para Twitter/X) -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Buscador Becas Benito Juárez - NO OFICIAL">
-  <meta name="twitter:description" content="Buscador NO OFICIAL de estatus o becas de Benito Juarez, Rita Cetina, Etc">
-  <meta name="twitter:image" content="https://consultarbeca.x10.mx/img/icons/tarjeta_bienestar_2.png">
-  <meta name="twitter:url" content="https://consultarbeca.x10.mx/">
-  <style>
-    :root {
-      --background-color: #f9f9f9;
-      --text-color: #000;
-      --card-bg: #fff;
-      --border: #0000007a;
-    }
+    <!-- HEAD -->
+    <title>Buscador de Becas Benito Juárez - NO OFICIAL</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <meta name="description" content="Buscador NO OFICIAL de estatus o becas de Benito Juarez, Rita Cetina, Etc">
 
-    [data-theme="dark"] {
-      --background-color: #121212;
-      --text-color: #e0e0e0;
-      --card-bg: #1e1e1e;
-      --border: #ffffff7a;
-    }
+    <!-- Como siempre bootstrap god dandonos sus diseñitos simples pero bonitos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/inicio.css?v=<?= $siteVersion ?>" rel="stylesheet">
 
-    body {
-      background-color: var(--background-color);
-      color: var(--text-color);
-    }
+    <!-- Open Graph (para Facebook, WhatsApp, Discord, etc) -->
+    <meta property="og:title" content="Buscador de Becas Benito Juárez - NO OFICIAL">
+    <meta property="og:description" content="Buscador NO OFICIAL de estatus o becas de Benito Juarez, Rita Cetina, Etc">
+    <meta property="og:image" content="https://consultarbeca.x10.mx/img/icons/tarjeta_bienestar_2.png">
+    <meta property="og:url" content="https://consultarbeca.x10.mx/">
+    <meta property="og:type" content="website">
 
-    .info,
-    .emisiones {
-      background-color: var(--card-bg);
-      border-radius: 8px;
-      padding: 3.5%;
-      margin-bottom: 1em;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
-      display: grid;
-    }
+    <!-- Twitter Card (opcional, para Twitter/X) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Buscador de Becas Benito Juárez - NO OFICIAL">
+    <meta name="twitter:description" content="Buscador NO OFICIAL de estatus o becas de Benito Juarez, Rita Cetina, Etc">
+    <meta name="twitter:image" content="https://consultarbeca.x10.mx/img/icons/tarjeta_bienestar_2.png">
+    <meta name="twitter:url" content="https://consultarbeca.x10.mx/">
 
-    .info > .icons{
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      gap: 1vh;
-      margin-bottom: 3vh;
-    }
-
-    #iconbeca {
-      width: 30vh;
-      /* filter: brightness(2); */
-      /* mix-blend-mode: multiply; */
-      border-radius: 2vh;
-    }
-
-    .info h2,
-    .emisiones h3 {
-      margin-top: 0;
-    }
-
-    .info.sub {
-      border: 0.2vh solid var(--border);
-      border-radius: 2.2vh;
-    }
-
-    .estado {
-      display: inline-flex;
-      gap: 2vh;
-      align-items: flex-end;
-    }
-
-    .status-icon-becario {
-      width: 65px;
-      height: auto;
-    }
-
-    .status-icon-bancarizacion {
-      width: 65px;
-      height: auto;
-    }
-
-    .status-text-becario {
-      text-size-adjust: auto;
-      font-size: xxx-large;
-    }
-
-    .status-text-becario.green {
-      color: #27ae60;
-    }
-
-    .status-text-becario.yellow{
-      color: #FFC700;
-    }
-
-    .status-text-becario.red{
-      color: #EB5757;
-    }
-
-    .estado svg {
-      width: 20px;
-      height: 20px;
-      fill: currentColor;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-left: 0.5em;
-      border-left: 0.25em solid var(--border);
-      padding-left: 1em;
-    }
-
-    #explicacionBaja {
-      margin-left: 0.5em;
-      border-left: 0.25em solid #EB5757;
-      padding-left: 1em;
-    }
-
-    #explicacionAny {
-      margin-left: 0.5em;
-      border-left: 0.25em solid #FFC700;
-      padding-left: 1em;
-    }
-
-    .form-container {
-      max-width: 500px;
-      margin: auto;
-    }
-
-    .loading {
-      display: none;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .bloque {
-      margin-top: 20px;
-      display: grid;
-    }
-
-    .bloque > .span-object {
-      display: list-item;
-      list-style: circle;
-      margin-left: 0.5em;
-      border-left: 0.25em solid #27ae60;
-      padding-left: 1em;
-      list-style: none;
-    }
-
-    header img {
-      max-width: 100%;
-      border-radius: 1em;
-      margin-bottom: 1em;
-      margin-top: -8%;
-      overflow: hidden;
-    }
-
-    footer {
-      margin-top: 2em;
-      padding-top: 1em;
-      border-top: 0.36vh solid var(--border);
-    }
-
-    fieldset {
-      padding: 2vh;
-      margin: 1vh;
-      border: 0.2vh solid var(--border);
-      border-radius: 2.2vh;
-    }
-
-    .main-conteiner {
-      filter: drop-shadow(0.8vh 0.8vh 1vh rgba(0, 0, 0, 0.3));
-    }
-
-    .main-form {
-      margin-top: 5vh;
-      margin-bottom: 15vh;
-    }
-
-    .hiddensensibledata {
-      filter: blur(1vh) !important;
-    }
-
-    .pre-title {
-      display: flex;
-      align-items: center;
-      gap: 1vh;
-    }
-
-    .icons-conteiner {
-      height: auto;
-      width: 6vh;
-    }
-  </style>
 </head>
 
 <body>
 
-  <div class="container my-4">
+    <div class="container my-4">
 
-    <!-- Banner de imagen -->
-    <header>
-      <img src="img/banner1.jpg" alt="Banner de Beca Benito Juárez">
-    </header>
+        <!-- Banner de imagen -->
+        <header>
+            <img src="img/banner1.jpg" alt="Banner de Beca Benito Juárez">
+        </header>
 
-    <h1 id="obj" class="text-center mb-4">Consulta de Becas Benito Juárez</h1>
+        <h1 id="obj" class="text-center mb-4">Consulta de Becas Benito Juárez</h1>
 
-    <!-- Mensaje informativo superior -->
-    <div class="alert alert-info text-center">
-      <b>Este sitio web NO ES OFICIAL y no SUPLANTA al buscador de estatus oficial.</b><br>
-      <a href="#seccion1footer">Lea más acerca de mí y este sitio web aquí</a><br>
-      <b>Consulta el calendario de pagos dando <a href="https://www.gob.mx/becasbenitojuarez/articulos/calendario-de-pago-segundo-bimestre-2025-becas-para-el-bienestar" target="_blank">click aquí</a></b>
-    </div>
-
-    <!-- Toggle de tema -->
-    <div class="text-end mb-3" style="
-    display: flex;
-    gap: 5%;
-    flex-wrap: nowrap;
-    justify-content: center;
-    ">
-      <div class="form-check form-switch"  style="display: flex; flex-direction: row;">
-        <input class="form-check-input" type="checkbox" id="themeToggle" style="margin-right: 1vh;">
-        <label class="form-check-label" for="themeToggle">Modo oscuro</label>
-      </div>
-      <div class="form-check form-switch"  style="display: flex; flex-direction: row;">
-        <input class="form-check-input" type="checkbox" id="sensibleData" style="margin-right: 1vh;">
-        <label class="form-check-label" for="sensibleData">Ocultar datos sensibles</label>
-      </div>
-    </div>
-
-    <!-- FORM -->
-    <div class="form-container info main-conteiner main-form">
-      <form id="curpForm" onsubmit="return false;">
-        <div class="mb-3">
-          <h3 for="curpInput" class="form-label"><b>Escribe tu CURP</b></h3>
-          <span class="form-text-curp">¿No conoces tu CURP? <a href="https://www.gob.mx/curp/" target="_blank">Consulta tu CURP aquí.</a></span>
-          <input type="text" name="CURP" id="curpInput" pattern="^[A-Za-z0-9]{18}$" class="form-control" minlength="18" maxlength="18" required
-            style="text-transform: uppercase;"
-            title="Ingresa una CURP válida de 18 caracteres (solo letras y números)"
-            oninput="this.value = this.value.replace(/\s/g, '')">
+        <!-- Mensaje informativo superior -->
+        <div class="alert alert-info text-center">
+            <b>Este sitio web NO ES OFICIAL y NO SUPLANTA al buscador de estatus oficial.</b><br>
+            <a href="#seccion1footer">Lea más acerca de mí y este sitio web aquí</a><br>
+            <b>Consulta el calendario de pagos dando <a href="https://www.gob.mx/becasbenitojuarez/articulos/calendario-de-pago-segundo-bimestre-2025-becas-para-el-bienestar" target="_blank">click aquí</a></b>
         </div>
 
-        <div class="mb-3" style="display: flex;justify-content: center;">
-          <div class="h-captcha" data-sitekey="<?= $siteKey ?>"></div>
-        </div>
-
-        <!-- Mensaje de errores, ya que alert es feo XD -->
-        <div class="alert alert-danger text-center hidden" id="errorAlertDiv"></div>
-
-        <button id="submitBtn" type="button" class="btn btn-primary w-100">Buscar</button>
-      </form>
-    </div>
-
-    <!-- Mensaje de carga -->
-    <div id="loadingMessage" class="loading text-center my-4">
-      <div class="spinner-border text-primary" role="status"></div>
-      <p>Cargando tus datos...</p>
-    </div>
-
-    <!-- Contenedor de datos API -->
-    <div id="apiDataContainer" style="display: none;" class="mt-4">
-      <section class="info main-conteiner">
-        <section class="icons">
-          <img id="iconbeca" src="img/becaicons/DEFAULT.jpg" alt="Icono de beca">
-          <div class="estado" id="estado"></div>
-        </section>
-        <div><strong>Programa:</strong> <span id="programa"></span></div>
-        <div><strong>CURP del beneficiario:</strong> <span id="curp"></span></div>
-        <div><strong>NOTA: </strong> Tu información podría no estar actualizada (esto quiere decir que no todos los beneficiarios tienen este problema), esto puede tardar días, semanas o meses en actualizarse por la Coordinación de Becas Benito Juárez.</div>
-      </section>
-
-      <section class="info main-conteiner">
-        <h2 class="pre-title"><img class="icons-conteiner" src="img/icons/becario.svg"> Información del becario</h2><br>
-        <div class="grid">
-          <!-- <div><strong>Programa:</strong> <span id="programa"></span></div> -->
-          <div><strong>CCT:</strong> <span id="cct"></span></div>
-          <div><strong>Fecha de Nacimiento:</strong> <span id="nacimiento"></span></div>
-          <div><strong>Periodo de Incorporación:</strong> <span id="periodo"></span></div>
-          <div><strong>Identificador del beneficiario:</strong> <span id="integrante"></span></div>
-          <div><strong>Total Pagos:</strong> <span id="totalPagos"></span></div>
-          <div><strong>Máximo de Pagos:</strong> <span id="maximoPagos"></span></div>
-          <div><strong>Dirección de Adscripción:</strong> <span id="direccionads"></span></div>
-        </div>
-        <div class="bloque hidden" id="explicacionBaja">
-          <h3 class="status-text-becario red" style="font-size: xx-large;"><span id="etiquetaBaja"></span></h3>
-          <strong>Fecha de baja:</strong> <span id="fechaBaja"></span>
-          <strong>Motivo de baja:</strong> <span id="motivoBaja"></span>
-          <strong>Fundamentación:</strong> <span id="motivoFundamentacion"></span>
-        </div>
-        <div class="bloque hidden" id="explicacionAny">
-          <h3 class="status-text-becario yellow" style="font-size: xx-large;"><span id="etiquetaAlerta"></span></h3>
-          <strong><span id="textoAlerta"></span></strong> <br>
-          <strong class="hidden" id="textoAlertaBUZON">¡Revisa tu buzón de mensajes, ahi recibirás seguimiento a tu caso!</strong> 
-        </div>
-      </section>
-
-      <div id="bancarizacionContainer" class="mt-4">
-        <section class="info main-conteiner">
-          <h2 class="pre-title"><img class="icons-conteiner" src="img/icons/bancarizacion.svg"> Bancarización</h2>
-          <div class="bancarizacionfases p-3 border rounded">
-              <!-- Aquí se insertarán dinámicamente las fases -->
-          </div>
-        </section>
-      </div>
-
-      <div class="info main-conteiner mt-4">
-        <h2 class="pre-title"><img class="icons-conteiner" src="img/icons/becasemitidas.svg"> Becas emitidas</h2>
-        <section class="emisiones" id="contenedor-emisiones">
-          <!-- Emisiones dinámicas -->
-        </section>
-      </div>
-
-      
-
-    </div>
-
-
-    <!-- Footer -->
-    <footer id="seccion1footer">
-          <b>¡HOLA! Soy un universitario (igual que posiblemente tú), así que nada de aquí es perfecto, posiblemente falte algo o alguna información sea erronea.</b><br>
-          Si usted sabe programar y desea apoyar a mejorarlo sin recibir ningún apoyo monetario más que apoyar a los jóvenes estudiantes, puedes hacer hacerlo dando <a href="https://github.com/MigMatos/BecasBJ-Website">click aquí</a>. <i>(¡Viva el código libre!)</i><br>
-          <b>Si deseas contactarme personalmente este es mi correo (o agradecerme igual es válido jaja): <a href="mailto:matitos2317@gmail.com">matitos2317@gmail.com</a></b><br>
-          <b>Si necesitas ayuda sobre información de tu BECA o ESTATUS: Llama al número 55 1162 0300 o envía un correo a <a href="mailto:atencion@becasbenitojuarez.gob.mx">atencion@becasbenitojuarez.gob.mx</a></b><br>
-          <br><h3>TODO ACERCA DEL SITIO WEB</h3></b><br>
-          Este sitio web está creado por situación INFORMATIVA ajeno a cualquier partido político o empresa.<br>
-          <b>Por obvias razones, este sitio web RECOPILA TU INFORMACIÓN para OBTENER TU INFORMACIÓN DE ESTATUS pero NO LO GUARDAMOS, TODO ES PRIVADO Y CONFIDENCIAL.<br>
-          Está prohibido recopilar datos ajenos a tu persona sin autorización, si alguien reporta un mal uso, ¡esto podría bloquearte de este sitio web!</b>
-          <br>
-          <br><h3>HISTORIA DEL SITIO WEB</h3></b><br>
-          Este sitio web fue creado desde que irresponsablemente por la coordinación de Becas Benito Juarez dejó en mantenimiento el sitio web, dejando sin información a los nuevos integrantes/reintegrantes becarios sin la información acerca de sus tarjetas, citas, etc. por más de un MES, eso es demasiado tiempo.<br>
-
-          <br>
-          
-    </footer>
-
-  </div>
-  
-  <script src='https://www.hCaptcha.com/1/api.js' async defer></script>
-  <script src='js/jquery-3.7.1.min.js' async defer></script>
-
-  <script>
-    const html = document.documentElement;
-    let api = {};
-    // Modo oscuro persistente
-    const toggle = document.getElementById('themeToggle');
-    toggle.checked = localStorage.getItem('theme') === 'dark';
-    html.setAttribute('data-theme', toggle.checked ? 'dark' : 'light');
-
-    toggle.addEventListener('change', () => {
-      const mode = toggle.checked ? 'dark' : 'light';
-      html.setAttribute('data-theme', mode);
-      localStorage.setItem('theme', mode);
-    });
-
-    const togglesensibleData = document.getElementById('sensibleData');
-    let sensitiveDataState = null;
-
-    function applySensitiveDataState() {
-      const stored = localStorage.getItem('sensitivedata');
-      const state = stored === null ? false : stored === 'true'; // false por defecto (oculto)
-
-      const ids = "curpInput,curp,cct,nacimiento,periodo,integrante,direccionads,fechaBaja".split(",");
-      const elements = [...ids.map(id => document.getElementById(id)), ...document.querySelectorAll('[elem-type="sensibledata"]')];
-      elements.forEach(e => e?.classList.toggle("hiddensensibledata", state));
-
-      if (typeof togglesensibleData !== "undefined") {
-        togglesensibleData.checked = state;
-      }
-
-      if (stored === null) {
-        localStorage.setItem('sensitivedata', state);
-      }
-
-      sensitiveDataState = state;
-    }
-
-    function toggleSensitiveData() {
-      sensitiveDataState = !sensitiveDataState;
-      localStorage.setItem('sensitivedata', sensitiveDataState);
-
-      const ids = "curpInput,curp,cct,nacimiento,periodo,integrante,direccionads,fechaBaja".split(",");
-      const elements = [...ids.map(id => document.getElementById(id)), ...document.querySelectorAll('[elem-type="sensibledata"]')];
-      elements.forEach(e => e?.classList.toggle("hiddensensibledata", sensitiveDataState));
-
-      if (typeof togglesensibleData !== "undefined") {
-        togglesensibleData.checked = sensitiveDataState;
-      }
-
-      console.log("Sensitivedata changed:", sensitiveDataState);
-    }
-
-    applySensitiveDataState();
-    togglesensibleData.addEventListener('change', () => {toggleSensitiveData();});
-    
-
-    window.addEventListener('load', () => {
-        if (/Mobi|Android|iPhone|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent)) {
-            // Pues vácio jaja
-        } else {
-            const objetivo = document.getElementById("obj"); 
-            if (objetivo) objetivo.scrollIntoView({ behavior: "smooth" });
-        }
-    });
-
-    // Validación y envío
-    const form = document.getElementById('curpForm');
-    const submitBtn = document.getElementById("submitBtn");
-    const loading = document.getElementById('loadingMessage');
-    const container = document.getElementById('apiDataContainer');
-    const errorBox = document.getElementById('errorAlertDiv');
-
-    let hcaptchaVal = "";
-
-    submitBtn.addEventListener('click', async e => {
-
-      try {hcaptchaVal = document.querySelector('[name="h-captcha-response"]').value;}
-      catch(e){console.log(e);}
-
-      if (!form.checkValidity()) {
-          form.reportValidity();
-          return;
-      }
-      if (hcaptchaVal === "") {
-          errorBox.classList.remove("hidden");
-          errorBox.innerHTML = "<b>Porfavor, resuelve el Captcha</b>";
-          // alert("Porfavor completa el Captcha");
-          return;
-      }
-
-      loading.style.display = 'block';
-
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
-      data.CURP = data.CURP.toUpperCase();
-
-      try {
-          const response = await fetch('php/usuario.php', {
-              method: 'POST',
-              body: new URLSearchParams(data),
-          });
-          api = await response.text();
-          console.log(api);
-          api = JSON.parse(api);
-          if(api.status != "200"){
-            if(api.error == null || api.error == undefined || api.error == "") {
-              errorBox.classList.remove("hidden");
-              errorBox.innerHTML = `<b>${api.message}</b>`;
-            } else {
-              errorBox.classList.remove("hidden");
-              errorBox.innerHTML = `<b>${api.error}</b>`;
-            }
-            container.style.display = 'none';
-            return;
-          }
-          renderInfo();
-          renderEmisiones();
-          container.style.display = 'block';
-          errorBox.classList.add("hidden");
-          const objetivo = document.getElementById("loadingMessage"); if (objetivo) objetivo.scrollIntoView({ behavior: "smooth" });
-      } catch (err) {
-          errorBox.classList.remove("hidden");
-          errorBox.innerHTML = "<b>Ocurrió un error al consultar tus datos, posiblemente hay algún problema con la página de becabenitojuarez.gob.mx o mantenimiento.</b>";
-          // alert("Error al consultar datos. Intenta nuevamente.");
-          container.style.display = 'none';
-          console.error(err)
-      } finally {
-          loading.style.display = 'none';
-      }
-    });
-
-  // JSON DATA
-
-
-    const estadoIcons = {
-      'ACTIVA': 'check.svg',
-      'EN REVISION': 'alert.svg',
-      'CAMBIO DE TITULAR': 'alert.svg',
-      'VERIFICACION RENAPO': 'alert.svg',
-      'BAJA': 'baja.svg'
-    };
-
-    const colorStatusTXT = {
-      'ACTIVA': 'green',
-      'BAJA': 'red'
-    }
-
-    const programas = {
-      'BASICA': 'Becas de Educación Básica para el Bienestar Benito Juárez',
-      'BUEEMS': 'Beca Universal para el Bienestar Benito Juárez de Educación Media Superior (BUEEMS)',
-      'JEF': 'Beca para el Bienestar Benito Juárez de Educación Superior (JEF)'
-    };
-
-    function renderInfo() {
-      const d = api.datos;
-      let SITUACION_TXT_FINAL = "SIN DATOS";
-      document.getElementById('curp').textContent = d.CURP;
-      document.getElementById('integrante').textContent = d.INTEGRANTE_ID;
-      document.getElementById('iconbeca').setAttribute("src",`img/becaicons/${d.PROGRAMA || 'DEFAULT'}.jpg`);
-      document.getElementById('programa').textContent = programas[d.PROGRAMA] || 'Beca Desconocida';
-      document.getElementById('cct').textContent = d.CCT;
-      document.getElementById('nacimiento').textContent = d.FECHA_NACIMIENTO_BECARIO;
-      document.getElementById('periodo').textContent = d.PERIODO_INCORPORACION;
-      document.getElementById('totalPagos').textContent = d.TOTAL_PAGOS;
-      document.getElementById('maximoPagos').textContent = d.MAXIMO_PAGOS;
-      document.getElementById('direccionads').textContent = d.DIRECCION_ADSCRIPCION;
-      if (d.SITUACION_INSCRIPCION_ACTUAL === 'BAJA') {
-        if(d.EXPLICACION_MOTIVO_BAJA) {
-          document.getElementById('explicacionBaja').classList.remove('hidden');
-          document.getElementById('motivoBaja').textContent = d.EXPLICACION_MOTIVO_BAJA;
-          document.getElementById('motivoFundamentacion').textContent = d.FUNDAMENTACION;
-          document.getElementById('etiquetaBaja').textContent = d.ETIQUETA_BAJA;
-          document.getElementById('fechaBaja').textContent = d.EJERCICIO_FISCAL_BAJA;
-        }
-        SITUACION_TXT_FINAL = "BAJA"
-      } else if(d.SITUACION_INSCRIPCION_ACTUAL == 'CAMBIO TITULAR') {
-        SITUACION_TXT_FINAL = "CAMBIO DE TITULAR"
-        document.getElementById('explicacionAny').classList.remove('hidden');
-        document.getElementById('textoAlerta').textContent = "Está pendiente una revisión y actualización del representante de tu familiar o tutor.";
-        document.getElementById('textoAlertaBUZON').classList.remove('hidden');
-      } else if(d.SITUACION_INSCRIPCION_ACTUAL == 'VERIFICACION RENAPO') {
-        SITUACION_TXT_FINAL = "VERIFICACION DE RENAPO"
-        document.getElementById('explicacionAny').classList.remove('hidden');
-        document.getElementById('textoAlerta').textContent = "Está pendiente una revisión y validación de tu CURP con RENAPO.";
-        document.getElementById('textoAlertaBUZON').classList.remove('hidden');
-      } else if(d.SITUACION_INSCRIPCION_ACTUAL == 'EN REVISION') {
-        SITUACION_TXT_FINAL = "EN REVISION"
-        document.getElementById('explicacionAny').classList.remove('hidden');
-        document.getElementById('textoAlerta').textContent = "Está pendiente una revisión de tu información o solicitud.";
-        document.getElementById('textoAlertaBUZON').classList.remove('hidden');
-      } else if(d.SITUACION_INSCRIPCION_ACTUAL == 'ACTIVA') {
-        SITUACION_TXT_FINAL = "ACTIVA"
-      } else {
-        SITUACION_TXT_FINAL = d.SITUACION_INSCRIPCION_ACTUAL;
-
-        // Si se vuelve a consultar una CURP, esto actualiza los datos
-        document.getElementById('textoAlertaBUZON').classList.add('hidden');
-        document.getElementById('explicacionBaja').classList.add('hidden');
-        document.getElementById('explicacionAny').classList.add('hidden');
-      }
-
-      // Mostrar al final debido al nuevo render de situación
-      document.getElementById('estado').innerHTML = `<img src="img/icons/${estadoIcons[d.SITUACION_INSCRIPCION_ACTUAL] || 'alert.svg'}" class="status-icon-becario"><span class="status-text-becario ${colorStatusTXT[d.SITUACION_INSCRIPCION_ACTUAL] || 'yellow'}">${SITUACION_TXT_FINAL}</span>`;
-
-      mostrarFasesBancarizacion(d);
-    }
-
-    function obtenerPeriodoTexto(anio, emision, id) {
-        let texto = "";
-
-        // Conversión segura a cadena
-        id = String(id);
-        emision = parseInt(emision);
-        anio = parseInt(anio);
-
-        const mesesPorEmision = {
-          2023: {
-            1: ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO"],
-            2: ["MARZO", "ABRIL", "MAYO", "JUNIO"],
-            3: ["SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"]
-          },
-          2024: {
-            1: {
-              "-1": "MAYO 2019 a JUNIO 2024",
-              default: ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO"]
-            },
-            2: {
-              default: ["SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"]
-            }
-          },
-          2025: {
-            1: {
-              "-1": "MAYO 2019 a JUNIO 2024",
-              default: ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO"]
-            },
-            2: {
-              default: ["MARZO", "ABRIL", "MAYO", "JUNIO"]
-            },
-            3: {
-              default: ["MAYO", "JUNIO", "JULIO", "AGOSTO"]
-            }
-          }
-        };
-
-        const datosAnio = mesesPorEmision[anio];
-        if (!datosAnio || !datosAnio[emision]) return "";
-
-        const datosEmision = datosAnio[emision];
-
-        if (typeof datosEmision === "object" && !Array.isArray(datosEmision)) {
-          if (id === "-1" && datosEmision["-1"]) {
-            return datosEmision["-1"];
-          } else if (datosEmision.default) {
-            let index = parseInt(id) - 1;
-            if (index >= 0 && index < datosEmision.default.length) {
-              texto = datosEmision.default.slice(0, index + 1).join(", ");
-              return texto;
-            }
-          }
-        } else if (Array.isArray(datosEmision)) {
-          let index = parseInt(id) - 1;
-          if (index >= 0 && index < datosEmision.length) {
-            texto = datosEmision.slice(0, index + 1).join(", ");
-            return texto;
-          }
-        }
-
-        return "";
-      }
-
-    function renderEmisiones() {
-      const emisionesCont = document.getElementById('contenedor-emisiones');
-      emisionesCont.innerHTML = "";
-      const datos = api.datos;
-      const emisionesPorAnio = {};
-
-      for (let key in datos) {
-
-        const match = key.match(/^(EMI(?:SION)?|FORMA_ENTREGA_APOYO|INSTITUCION_LIQUIDADORA|PAGADO|FECHA_PAGO|PERIODOS|ESTATUS_PAGO|EMISION_APOYO|FECHA_PROGRAMADA_SOT|DIR_PROGRAMADA_SOT)_?(\d{2})(?:EMI(?:SION)?)(\d)$/);
-        console.log(key);
-        if (match) {
-          console.log(match);
-          const anio = '20' + match[2];
-          const numero = match[3];
-          const tipo = match[1];
-          if (!emisionesPorAnio[anio]) emisionesPorAnio[anio] = {};
-          if (!emisionesPorAnio[anio][numero]) emisionesPorAnio[anio][numero] = {};
-          emisionesPorAnio[anio][numero][tipo] = datos[key];
-        }
-      }
-
-      
-
-      for (let anio in emisionesPorAnio) {
-        let contenedorAnio = document.createElement('div');
-        contenedorAnio.className = 'info sub';
-        contenedorAnio.innerHTML = `<h3>${anio}</h3>`;
-        const emisiones = emisionesPorAnio[anio];
-
-        for (let num in emisiones) {
-          const em = emisiones[num];
-          console.log(anio);
-          console.log(num);
-          console.log(em);
-          console.log("--------");
-          const tieneDatos = Object.values(em).some(v => v !== null && v !== '' && v !== '...');
-          if (!tieneDatos && parseInt(anio) === new Date().getFullYear() || tieneDatos && (em.EMISION_APOYO == null && parseInt(anio) > 2023)) {
-            contenedorAnio.innerHTML += `<fieldset class="bloque"><legend><strong>Emisión #${num}</strong></legend>
-                    <span>No tienes o aún no tienes asignado esta emisión con periodos de ${obtenerPeriodoTexto(anio,num,2)}.</span>
-                </fieldset>`;
-            continue; 
-          } else if (!tieneDatos) {continue};
-          
-          if(em.PAGADO == "0") em.PAGADO = "NO PAGADO"; else em.PAGADO = "PAGADO";
-          // if(em.EMISION_APOYO == null && parseInt(anio) > 2023) {
-          //     continue;
-          // }
-
-          contenedorAnio.innerHTML += `
-            <fieldset class="bloque"><legend><strong>Emisión #${num}</strong></legend>
-              <span ${!em.FORMA_ENTREGA_APOYO || em.FORMA_ENTREGA_APOYO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Forma de pago:</b> ${em.FORMA_ENTREGA_APOYO || 'N/A'}</span>
-              <span ${!em.INSTITUCION_LIQUIDADORA || em.INSTITUCION_LIQUIDADORA.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Recibirás el pago en medio de:</b> ${em.INSTITUCION_LIQUIDADORA || 'N/A'}</span>
-              <span ${!em.PAGADO || em.PAGADO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Pago de la emisión efectuado:</b> ${em.PAGADO || 'N/A'}</span>
-              <span ${!em.FECHA_PAGO || em.FECHA_PAGO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Fecha de Pago:</b> ${em.FECHA_PAGO || 'N/A'}</span>
-              <span ${!em.ESTATUS_PAGO || em.ESTATUS_PAGO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Situación actual del pago:</b> ${em.ESTATUS_PAGO || 'N/A'}</span>
-              <span ${!em.PERIODOS || em.PERIODOS.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Periodos a pagar:</b> ${obtenerPeriodoTexto(anio,num,em.PERIODOS)}</span>
-              <span elem-type="sensibledata" ${!em.FECHA_PROGRAMADA_SOT || em.FECHA_PROGRAMADA_SOT.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Fecha Programada:</b> ${em.FECHA_PROGRAMADA_SOT || 'N/A'}</span>
-              <span elem-type="sensibledata" ${!em.DIR_PROGRAMADA_SOT || em.DIR_PROGRAMADA_SOT.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Dirección Programada:</b> ${em.DIR_PROGRAMADA_SOT || 'N/A'}</span>
-              
-            </fieldset>
-          `;
-        }
-
-        if (contenedorAnio.innerHTML !== `<h3>${anio}</h3>`) {
-          emisionesCont.appendChild(contenedorAnio);
-        }
-      }
-    }
-
-
-
-    function mostrarFasesBancarizacion(d) {
-        const fasesContainer = document.querySelector("#bancarizacionContainer .bancarizacionfases");
-        fasesContainer.innerHTML = ""; // Limpiar contenido previo
-        const fases = [];
-        let mostrarFase1 = true;
-        let mostrarFase2 = false;
-        let mostrarFase3 = false;
-        let alerta = "";
-        // Mostrar alerta si aplica
-        if (d.BANCARIZACION_RECHAZADA == 1 && d.PROGRAMA == "BUEEMS") {
-            alerta = document.createElement("div");
-            alerta.className = "alert alert-warning mb-3";
-            alerta.innerHTML = `
-                A partir de junio de 2024, revisa este apartado para saber cuándo y dónde recoger tu medio de pago.<br>
-                Lleva tu documentación completa. Si eres menor de edad, ve acompañado/a de tu tutor.
-            `;
-            fasesContainer.appendChild(alerta);
-            
-        } else if (d.BANCARIZACION_RECHAZADA == 0 && d.BANCARIZACION.length == 0) {
-            alerta = document.createElement("div");
-            alerta.className = "alert alert-danger mb-3";
-            alerta.innerHTML = `
-                No se está llevando a cabo ninguna bancarización.
-            `;
-            fasesContainer.appendChild(alerta);
-            mostrarFase1 = false;
-        } else if (d.BANCARIZACION == "PENDIENTE") {
-            alerta = document.createElement("div");
-            alerta.className = "alert alert-primary mb-3";
-            alerta.innerHTML = `
-              <b>¡Revisa constantemente este apartado!</b><br>
-              Aún no te hemos asignado una fecha de entrega y lugar de entrega, revisa constantemente este apartado.
-            `;
-            fasesContainer.appendChild(alerta);
-        }
-
-        if(mostrarFase1) {
-          fases.push({
-              nombre: "PENDIENTE",
-              rutaIcono: "img/icons/relojalert.png",
-              activa: true,
-              i: 1
-          });
-        }
-
-        if (Array.isArray(d.BANCARIZACION)) {
-            for (const banco of d.BANCARIZACION) {
-                const ac = banco.AC; // No tengo idea de que es pero está asignado para una función
-                const medioPendiente = banco.DESC_EST_FORMZ_UPD;
-                const estrategia = banco.TIPO_ESTRATEGIA_DGOVAC;
-                const fechaHora = banco.FECHA_HORA;
-                const fechaHoraProgramada = banco.FECHA_PROGRAMADA;
-                const remesa = banco.NUMERO_REMESA;
-                const sucursal = banco.SUCURSAL;
-								const direccionSucursal = banco.DIRECCION_SUCURSAL;
-                let inFecha = "";
-                let longitudFechaBanco = "";
-                let fecha = "";
-                let hora = "";
-
-                const tieneFecha = fechaHora && fechaHora.trim() !== "";
-                if(tieneFecha){
-                    inFecha = fechaHora.indexOf(",");
-										lonFechaBanco = fechaHora.length;
-										fecha = fechaHora.substring(0, inFecha);
-										hora = fechaHora.substring(inFecha + 1, lonFechaBanco);
-                }
-
-                if (medioPendiente === "MEDIO PENDIENTE DE ENTREGAR" && estrategia != "" && tieneFecha) {
-                    mostrarFase2 = true;
-                    alerta = document.createElement("div");
-                    alerta.className = "alert alert-warning mb-3";
-                    alerta.innerHTML = `
-                        Tienes una fecha asignada para recoger tu tarjeta el día <span elem-type="sensibledata">${fecha}</span> con horario de <span elem-type="sensibledata">${hora}</span> para recoger por medio de <span elem-type="sensibledata">${sucursal}</span> con dirección asignada en <span elem-type="sensibledata">${direccionSucursal}</span>.<br>
-                        Remesas asignadas: <span elem-type="sensibledata">${remesa}</span><br>
-                        <b>¡RECUERDA LLEVAR TU DOCUMENTACION COMPLETA!</b> 
-                    `;
-                    fasesContainer.appendChild(alerta);
-                    
-                } else if (medioPendiente === "MEDIO PENDIENTE DE ENTREGAR" && !tieneFecha) {
-                  alerta = document.createElement("div");
-                  alerta.className = "alert alert-info mb-3";
-                  alerta.innerHTML = `
-                        ¡Tu tarjeta ya casi llega a tu localidad!
-                        <b>¡REVISA CONSTANTEMENTE PARA VER UNA FECHA ASIGNADA A LA ENTREGA DE TU TARJETA!</b> 
-                    `;
-                  fasesContainer.appendChild(alerta);
-                }
-
-                if (medioPendiente === "MEDIO ENTREGADO / FORMALIZADO") {
-                  if(ac == 2){
-                    alerta = document.createElement("div");
-                    alerta.className = "alert alert-danger mb-3";
-                    alerta.innerHTML = `
-                        <b>¡NECESITAS CAMBIAR TU NIP DE TU TARJETA DEL BANCO BIENESTAR!</b><br>
-                        ¡La dispersiones pendientes de tu beca no se activarán hasta realizar esta acción!<br>
-                        Deberás acudir a una ventanilla de atención el día <span elem-type="sensibledata">${fechaHoraProgramada}</span> en la hora segerida de <span elem-type="sensibledata">${hora}</span> horas de algún Banco Bienestar con tu tarjeta, identificación oficial y tu NIP actual que está impreso en el sobre donde recibiste tu Tarjeta Bienestar.
-                    `;
-                  } else {
-                    alerta = document.createElement("div");
-                    alerta.className = "alert alert-success mb-3";
-                    alerta.innerHTML = `
-                        <b>¡BANCARIZACIÓN COMPLETADA!</b><br>
-                        Conoce las próximas fechas de las becas a emitir en la sección de "Becas Emitidas"<br>
-                        Si necesitas consultar tu saldo o movimientos descarga la App Banco del Bienestar.
-                    `;
-                  }
-                    fasesContainer.appendChild(alerta);
-                    mostrarFase2 = true;
-                    mostrarFase3 = true;
-                }
-            }
-        }
-
-        if (d.PERIODO_INCORPORACION === "SEP-2023") {
-            mostrarFase2 = true;
-            mostrarFase3 = true;
-        }
-
-        if (mostrarFase2) {
-            fases.push({
-                nombre: "CITA PENDIENTE",
-                rutaIcono: "img/icons/citaasignado.png",
-                activa: true,
-                i: 2
-            });
-        }
-
-        if (mostrarFase3) {
-            fases.push({
-                nombre: "TARJETA ENTREGADA",
-                rutaIcono: "img/icons/tarjeta_bienestar_2.png",
-                activa: true,
-                i: 3
-            });
-        }
-
-        // Generar HTML de fases
-        const faseHTML = fases.map(fase => `
-            <div class="text-center mx-2" fase-bancarizacion="${fase.i}">
-                <img src="${fase.rutaIcono}" class="status-icon-bancarizacion mb-1" alt="${fase.nombre}">
-                <div class="${fase.activa ? 'fw-bold text-success' : 'text-muted'}">${fase.nombre}</div>
+        <!-- Toggle de tema -->
+        <div class="text-end mb-3" style="display: flex;gap: 5%;flex-wrap: nowrap;justify-content: center;">
+            <div class="form-check form-switch" style="display: flex; flex-direction: row;">
+                <input class="form-check-input" type="checkbox" id="themeToggle" style="margin-right: 1vh;">
+                <label class="form-check-label" for="themeToggle">Modo oscuro</label>
             </div>
-        `).join("<h1 style='-webkit-text-stroke: thick;' fase-bancarizacion='0'>• • •</h1>");
-
-        fasesContainer.innerHTML += `
-            <div class="d-flex justify-content-center flex-wrap gap-3 mt-2" style="align-items: center;">
-                ${faseHTML}
+            <div class="form-check form-switch" style="display: flex; flex-direction: row;">
+                <input class="form-check-input" type="checkbox" id="sensibleData" style="margin-right: 1vh;">
+                <label class="form-check-label" for="sensibleData">Ocultar datos sensibles</label>
             </div>
-        `;
-          
-        // MOBILE DESING
-        if (/Mobi|Android|iPhone|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent)) {
-            const elementos = document.querySelectorAll('[fase-bancarizacion]');
-            elementos.forEach((el, i) => {
-                if (i !== elementos.length - 1) {
-                    el.classList.add('hidden');
+        </div>
+
+        <!-- FORM -->
+        <div class="form-container info main-conteiner main-form">
+            <form id="curpForm" onsubmit="return false;">
+                <div class="mb-3">
+                    <h3 for="curpInput" class="form-label"><b>Escribe tu CURP</b></h3>
+                    <span class="form-text-curp">¿No conoces tu CURP? <a href="https://www.gob.mx/curp/" target="_blank">Consulta tu CURP aquí.</a></span>
+                    <input type="text" name="CURP" id="curpInput" pattern="^[A-Za-z0-9]{18}$" class="form-control" minlength="18" maxlength="18" required style="text-transform: uppercase;" title="Ingresa una CURP válida de 18 caracteres (solo letras y números)" oninput="this.value = this.value.replace(/\s/g, '')">
+                </div>
+
+                <div class="mb-3" style="display: flex;justify-content: center;">
+                    <div class="h-captcha" data-sitekey="<?= $siteKey ?>"></div>
+                </div>
+
+                <!-- Mensaje de errores, ya que alert es feo XD -->
+                <div class="alert alert-danger text-center hidden" id="errorAlertDiv"></div>
+
+                <button id="submitBtn" type="button" class="btn btn-primary w-100">Buscar</button>
+            </form>
+        </div>
+
+        <!-- Mensaje de carga -->
+        <div id="loadingMessage" class="loading text-center my-4">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p>Cargando tus datos...</p>
+        </div>
+
+        <!-- Contenedor de datos API -->
+        <div id="apiDataContainer" style="display: none;" class="mt-4">
+            <section class="info main-conteiner">
+                <section class="icons">
+                    <img id="iconbeca" src="img/becaicons/DEFAULT.jpg" alt="Icono de beca">
+                    <div class="estado" id="estado"></div>
+                </section>
+                <div><strong>Programa:</strong> <span id="programa"></span></div>
+                <div><strong>CURP del beneficiario:</strong> <span id="curp"></span></div>
+                <div><strong>NOTA: </strong> Tu información podría no estar actualizada (esto quiere decir que no todos los beneficiarios tienen este problema), esto puede tardar días, semanas o meses en actualizarse por la Coordinación de Becas Benito Juárez.</div>
+            </section>
+
+            <section class="info main-conteiner">
+                <h2 class="pre-title"><img class="icons-conteiner" src="img/icons/becario.svg"> Información del becario</h2><br>
+                <div class="grid">
+                    <!-- <div><strong>Programa:</strong> <span id="programa"></span></div> -->
+                    <div><strong>CCT:</strong> <span id="cct"></span></div>
+                    <div><strong>Fecha de Nacimiento:</strong> <span id="nacimiento"></span></div>
+                    <div><strong>Periodo de Incorporación:</strong> <span id="periodo"></span></div>
+                    <div><strong>Identificador del beneficiario:</strong> <span id="integrante"></span></div>
+                    <div><strong>Total Pagos:</strong> <span id="totalPagos"></span></div>
+                    <div><strong>Máximo de Pagos:</strong> <span id="maximoPagos"></span></div>
+                    <div><strong>Dirección de Adscripción:</strong> <span id="direccionads"></span></div>
+                </div>
+                <div class="bloque hidden" id="explicacionBaja">
+                    <h3 class="status-text-becario red" style="font-size: xx-large;"><span id="etiquetaBaja"></span></h3>
+                    <strong>Fecha de baja:</strong> <span id="fechaBaja"></span>
+                    <strong>Motivo de baja:</strong> <span id="motivoBaja"></span>
+                    <strong>Fundamentación:</strong> <span id="motivoFundamentacion"></span>
+                </div>
+                <div class="bloque hidden" id="explicacionAny">
+                    <h3 class="status-text-becario yellow" style="font-size: xx-large;"><span id="etiquetaAlerta"></span></h3>
+                    <strong><span id="textoAlerta"></span></strong> <br>
+                    <strong class="hidden" id="textoAlertaBUZON">¡Revisa tu buzón de mensajes, ahi recibirás seguimiento a tu caso!</strong>
+                </div>
+            </section>
+
+            <div id="bancarizacionContainer" class="mt-4">
+                <section class="info main-conteiner">
+                    <h2 class="pre-title"><img class="icons-conteiner" src="img/icons/bancarizacion.svg"> Bancarización</h2>
+                    <div class="bancarizacionfases p-3 border rounded">
+                        <!-- Aquí se insertarán dinámicamente las fases -->
+                    </div>
+                </section>
+            </div>
+
+            <div class="info main-conteiner mt-4">
+                <h2 class="pre-title"><img class="icons-conteiner" src="img/icons/becasemitidas.svg"> Becas emitidas</h2>
+                <section class="emisiones" id="contenedor-emisiones">
+                    <!-- Emisiones dinámicas -->
+                </section>
+            </div>
+
+
+
+        </div>
+
+
+        <!-- Footer -->
+        <footer id="seccion1footer">
+            <b>¡HOLA! Soy un universitario (igual que posiblemente tú), así que nada de aquí es perfecto, posiblemente falte algo o alguna información sea erronea.</b><br>
+            Si usted sabe programar y desea apoyar a mejorarlo sin recibir ningún apoyo monetario más que apoyar a los jóvenes estudiantes, puedes hacer hacerlo dando <a href="https://github.com/MigMatos/BecasBJ-Website">click aquí</a>. <i>(¡Viva el código libre!)</i><br>
+            <b>Si deseas contactarme personalmente este es mi correo (o agradecerme igual es válido jaja): <a href="mailto:matitos2317@gmail.com">matitos2317@gmail.com</a></b><br>
+            <b>Si necesitas ayuda sobre información de tu BECA o ESTATUS: Llama al número 55 1162 0300 o envía un correo a <a href="mailto:atencion@becasbenitojuarez.gob.mx">atencion@becasbenitojuarez.gob.mx</a></b><br>
+            <br>
+            <h3>TODO ACERCA DEL SITIO WEB</h3></b><br>
+            Este sitio web está creado por situación INFORMATIVA ajeno a cualquier partido político o empresa.<br>
+            <b>Por obvias razones, este sitio web RECOPILA TU INFORMACIÓN para OBTENER TU INFORMACIÓN DE ESTATUS pero NO LO GUARDAMOS, TODO ES PRIVADO Y CONFIDENCIAL.<br>
+                Está prohibido recopilar datos ajenos a tu persona sin autorización, si alguien reporta un mal uso, ¡esto podría bloquearte de este sitio web!</b>
+            Esto no quiere decir que estés dando tu INFORMACIÓN a cualquier SITIO WEB, ten cuidado y protegete de quienes quieran lucrar con tus datos.<br>
+            <b>Si alguien te mandó este enlace por DINERO (o por un acortador con publicidad) o pidió TU INFORMACION BANCARIA, ¡lamento decirte que te han estafado!. Nosotros no pedimos NINGÚN PESO así que reportalo inmediatamente.</b><br>
+            <br>
+            <br>
+            <h3>HISTORIA DEL SITIO WEB</h3></b><br>
+            Este sitio web fue creado desde que irresponsablemente por la coordinación de Becas Benito Juarez dejó en mantenimiento el sitio web, dejando sin información a los nuevos integrantes/reintegrantes becarios sin la información acerca de sus tarjetas, citas, etc. por más de un MES, eso es demasiado tiempo.<br>
+
+            <br>
+
+        </footer>
+
+    </div>
+
+    <script src='https://www.hCaptcha.com/1/api.js' async defer></script>
+    <script src='./js/utilidades.js?v=<?= $siteVersion ?>'></script>
+    <script src='./js/renderAPI.js?v=<?= $siteVersion ?>'></script>
+
+    <!-- Script inicializador, básicamente aqui inicia todo, como la validación de datos y el retorno de datos de la API -->
+    <script>
+        let api = {};
+        // Validación y envío
+        const form = document.getElementById('curpForm');
+        const submitBtn = document.getElementById("submitBtn");
+        const loading = document.getElementById('loadingMessage'); // Posiblemente haga otro loader, pero nah, a quien le importa la estética ahorita jaja
+        const container = document.getElementById('apiDataContainer');
+        const errorBox = document.getElementById('errorAlertDiv');
+
+        let hcaptchaVal = "";
+
+        submitBtn.addEventListener('click', async e => {
+
+            try {
+                hcaptchaVal = document.querySelector('[name="h-captcha-response"]').value;
+            } catch (e) {
+                console.log(e);
+            }
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            if (hcaptchaVal === "") {
+                errorBox.classList.remove("hidden");
+                errorBox.innerHTML = "<b>Porfavor, resuelve el Captcha</b>";
+                // alert("Porfavor completa el Captcha");
+                return;
+            }
+
+            loading.style.display = 'block';
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            data.CURP = data.CURP.toUpperCase();
+
+            try {
+                const response = await fetch('php/usuario.php', {
+                    method: 'POST',
+                    body: new URLSearchParams(data),
+                });
+                api = await response.text();
+                console.log(api);
+                api = JSON.parse(api);
+                if (api.status != "200") {
+                    if (api.error == null || api.error == undefined || api.error == "") {
+                        errorBox.classList.remove("hidden");
+                        errorBox.innerHTML = `<b>${api.message}</b>`;
+                    } else {
+                        errorBox.classList.remove("hidden");
+                        errorBox.innerHTML = `<b>${api.error}</b>`;
+                    }
+                    container.style.display = 'none';
+                    return;
                 }
-            });
-        }
-    }
-
-
-  </script>
-  <!-- Ya no es necesario el script borrado, la index para otras páginas esta en el HEAD, así hay más control sobre los meta-tags -->
+                renderInfo();
+                renderFasesBancarizacion();
+                renderEmisiones();
+                container.style.display = 'block';
+                errorBox.classList.add("hidden");
+                const objetivo = document.getElementById("loadingMessage");
+                if (objetivo) objetivo.scrollIntoView({
+                    behavior: "smooth"
+                });
+            } catch (err) {
+                errorBox.classList.remove("hidden");
+                errorBox.innerHTML = "<b>Ocurrió un error al consultar tus datos, posiblemente hay algún problema con la página de becabenitojuarez.gob.mx o mantenimiento.</b>";
+                // alert("Error al consultar datos. Intenta nuevamente.");
+                container.style.display = 'none';
+                console.error(err)
+            } finally {
+                loading.style.display = 'none';
+            }
+        });
+    </script>
+    <!-- Ya no es necesario el script borrado, la index para otras páginas esta en el HEAD, así hay más control sobre los meta-tags -->
 
 </body>
 
