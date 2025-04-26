@@ -38,5 +38,5 @@ Este proyecto nace para **restaurar y mejorar** esa funcionalidad mientras el po
 
 1. **Clona** el repositorio:
    ```bash
-   git clone https://github.com/tu-usuario/becas-benito-juarez.git
-   cd becas-benito-juarez
+   git clone https://github.com/MigMatos/BecasBJ-Website.git
+   cd BecasBJ-Website
