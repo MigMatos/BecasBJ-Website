@@ -286,7 +286,7 @@
                 });
             } catch (err) {
                 errorBox.classList.remove("hidden");
-                errorBox.innerHTML = "<b>Ocurrió un error al consultar tus datos, posiblemente hay algún problema con la página de becabenitojuarez.gob.mx o mantenimiento.</b>";
+                errorBox.innerHTML = "<b>Ocurrió un error al consultar tus datos, posiblemente hay algún problema con la página de becabenitojuarez.gob.mx o mantenimiento.</b><br><b>¡Intentalo nuevamente en una hora o más tarde!</b>";
                 // alert("Error al consultar datos. Intenta nuevamente.");
                 container.style.display = 'none';
                 console.error(err)
