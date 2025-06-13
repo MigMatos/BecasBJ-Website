@@ -48,9 +48,9 @@
 
         <!-- Mensaje informativo superior -->
         <div class="alert alert-info text-center">
-            <b>Este sitio web NO ES OFICIAL y NO SUPLANTA al buscador de estatus oficial.</b><br>
+            <b>Este sitio web NO ES OFICIAL y NO SUPLANTA al <a href="https://buscador.becasbenitojuarez.gob.mx/consulta/">buscador de estatus oficial</a>.</b><br>
             <a href="#seccion1footer">Lea más acerca de mí y este sitio web aquí</a><br>
-            <b>Consulta el calendario de pagos dando <a href="https://www.gob.mx/becasbenitojuarez/articulos/calendario-de-pago-segundo-bimestre-2025-becas-para-el-bienestar" target="_blank">click aquí</a></b>
+            <b>Consulta el calendario de pagos de JUNIO dando <a href="https://www.gob.mx/becasbenitojuarez/articulos/calendario-de-pago-tercer-bimestre-2025-becas-para-el-bienestar" target="_blank">click aquí</a></b>
         </div>
 
         <!-- Toggle de tema -->
@@ -148,13 +148,43 @@
 
         </div>
 
+        <!-- Modal -->
+
+        <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="alertModalLabel">Aviso Importante</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="fs-4">
+                Si te mandaron este sitio web a cambio de tu <span class="fw-bold text-uppercase">información bancaria</span>,
+                </p>
+                <p>
+                (o por un acortador con publicidad) así como información personal como tu nombre, edad, INE antes de entrar a esta página.
+                </p>
+                <p class="fs-4 text-danger fw-bold text-uppercase">
+                ¡LAMENTO DECIRTE QUE TE HAN ESTAFADO!
+                </p>
+                <p>
+                Este sitio web nunca pedirá <span class="fw-bold text-uppercase">tu información bancaria o dinero</span> y siempre tus consultas <span class="fw-bold text-uppercase">serán anónimas y nunca se almacenan</span>.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+            </div>
+        </div>
+        </div>
+
 
         <!-- Footer -->
         <footer id="seccion1footer">
             <b>¡HOLA! Soy un universitario (igual que posiblemente tú), así que nada de aquí es perfecto, posiblemente falte algo o alguna información sea erronea.</b><br>
             Si usted sabe programar y desea apoyar a mejorarlo sin recibir ningún apoyo monetario más que apoyar a los jóvenes estudiantes, puedes hacer hacerlo dando <a href="https://github.com/MigMatos/BecasBJ-Website">click aquí</a>. <i>(¡Viva el código libre!)</i><br>
             <b>Si deseas contactarme personalmente este es mi correo (o agradecerme igual es válido jaja): <a href="mailto:matitos2317@gmail.com">matitos2317@gmail.com</a></b><br>
-            <b>Si necesitas ayuda sobre información de tu BECA o ESTATUS: Llama al número 55 1162 0300 o envía un correo a <a href="mailto:atencion@becasbenitojuarez.gob.mx">atencion@becasbenitojuarez.gob.mx</a></b><br>
+            <b>Si necesitas ayuda sobre información de tu BECA o ESTATUS, deberás ir personalmente a una oficina de atención, encuentra un centro de atención en: <a href="https://buscador.becasbenitojuarez.gob.mx/sedes-atencion/">https://buscador.becasbenitojuarez.gob.mx/sedes-atencion/</a><br>
             <br>
             <h3>TODO ACERCA DEL SITIO WEB</h3></b><br>
             Este sitio web está creado por situación INFORMATIVA ajeno a cualquier partido político o empresa.<br>
@@ -166,19 +196,31 @@
             <br>
             <h3>HISTORIA DEL SITIO WEB</h3></b><br>
             Este sitio web fue creado desde que irresponsablemente por la coordinación de Becas Benito Juarez dejó en mantenimiento el sitio web, dejando sin información a los nuevos integrantes/reintegrantes becarios sin la información acerca de sus tarjetas, citas, etc. por más de un MES, eso es demasiado tiempo.<br>
-
+            <br><b>Actualización de Junio:</b><br> ¡Hola! tenía ganas de cerrar este sitio web por que el gobierno baneó este sitio web y además de estar fichados por gente ignorate cómo un sitio web de estafa cuando nosotros en ningún momento hemos pedido dinero a cambio o robado datos pero con la intención de seguir apoyando a quienes realmente lo necesitan, 
+            estaremos dejando activo el sitio hasta que finalmente vuelva a funcionar el buscador de estatus,
+            en serio que horrible lo que está haciendo nuestro gobierno y más por aquellos donde la sede de atención es demasiado lejos de los beneficiarios o saber si su beca ya cayó, ¡no todos tenemos un banco cercano ni tampoco los recursos, por algo necesitan este apoyo!
             <br>
 
         </footer>
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src='https://www.hCaptcha.com/1/api.js' async defer></script>
     <script src='./js/utilidades.js?v=<?= $siteVersion ?>'></script>
     <script src='./js/renderAPI.js?v=<?= $siteVersion ?>'></script>
 
     <!-- Script inicializador, básicamente aqui inicia todo, como la validación de datos y el retorno de datos de la API -->
     <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!sessionStorage.getItem('modalShown')) {
+            var myModal = new bootstrap.Modal(document.getElementById('alertModal'));
+            myModal.show();
+            sessionStorage.setItem('modalShown', 'true');
+            }
+        });
+
         let api = {};
         // Validación y envío
         const form = document.getElementById('curpForm');
@@ -201,12 +243,12 @@
                 form.reportValidity();
                 return;
             }
-            if (hcaptchaVal === "") {
-                errorBox.classList.remove("hidden");
-                errorBox.innerHTML = "<b>Porfavor, resuelve el Captcha</b>";
-                // alert("Porfavor completa el Captcha");
-                return;
-            }
+            // if (hcaptchaVal === "") {
+            //     errorBox.classList.remove("hidden");
+            //     errorBox.innerHTML = "<b>Porfavor, resuelve el Captcha</b>";
+            //     // alert("Porfavor completa el Captcha");
+            //     return;
+            // }
 
             loading.style.display = 'block';
 

@@ -19,20 +19,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         exit();
     }
-    if (empty($token)) {
-        echo json_encode([
-            'status' => 400,
-            'error' => 'Porfavor, resuelve el Captcha'
-        ]);
-        exit();
-    }
-    if(!validarHCaptcha($token, $secret_key)) {
-        echo json_encode([
-            'status' => 400,
-            'error' => 'Actualiza la página y resuelve el Captcha'
-        ]);
-        exit();  
-    }
+    // if (empty($token)) {
+    //     echo json_encode([
+    //         'status' => 400,
+    //         'error' => 'Porfavor, resuelve el Captcha'
+    //     ]);
+    //     exit();
+    // }
+    // if(!validarHCaptcha($token, $secret_key)) {
+    //     echo json_encode([
+    //         'status' => 400,
+    //         'error' => 'Actualiza la página y resuelve el Captcha'
+    //     ]);
+    //     exit();  
+    // }
     // Lo dejamos de ultimo, asi evitamos sobrecargar la API y que el Captcha haga su trabajo jsjs
     $data = getBecasJSON($curp);
     if(!$data || empty($data)){
