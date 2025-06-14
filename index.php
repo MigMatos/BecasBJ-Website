@@ -267,7 +267,11 @@
                 if (api.status != "200") {
                     if (api.error == null || api.error == undefined || api.error == "") {
                         errorBox.classList.remove("hidden");
-                        errorBox.innerHTML = `<b>${api.message}</b>`;
+                        if (api.message == null || api.message == undefined || api.message == ""){
+                            errorBox.innerHTML = "<b>Ocurrió un error al consultar tus datos, posiblemente hay algún problema con la página de becabenitojuarez.gob.mx o mantenimiento.</b><br><b>¡Intentalo nuevamente en una hora o más tarde!</b>";
+                        } else {
+                            errorBox.innerHTML = `<b>${api.message}</b>`;
+                        }
                     } else {
                         errorBox.classList.remove("hidden");
                         errorBox.innerHTML = `<b>${api.error}</b>`;
