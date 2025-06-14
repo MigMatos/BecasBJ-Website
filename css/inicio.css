@@ -3,6 +3,7 @@
     --text-color: #000;
     --card-bg: #fff;
     --border: #0000007a;
+    --close-btn: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="%23000"><path d="M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z"/></svg>');
 }
 
 [data-theme="dark"] {
@@ -10,11 +11,28 @@
     --text-color: #e0e0e0;
     --card-bg: #1e1e1e;
     --border: #ffffff7a;
+    --close-btn: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="%23fff"><path d="M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z"/></svg>');
 }
 
 body {
     background-color: var(--background-color);
     color: var(--text-color);
+}
+
+.btn-close {
+    --bs-btn-close-bg: var(--close-btn);
+    --bs-btn-close-color: var(--card-bg);
+}
+
+.modal {
+    --bs-modal-footer-border-color: var(--border);
+    --bs-modal-header-border-color: var(--border);
+}
+
+.modal-alerts {
+    background-color: var(--card-bg);
+    border: 0.2vh solid var(--border);
+    border-radius: 2.2vh;
 }
 
 .info,
