@@ -111,8 +111,12 @@
                     <div><strong>Fecha de Nacimiento:</strong> <span id="nacimiento"></span></div>
                     <div><strong>Periodo de Incorporación:</strong> <span id="periodo"></span></div>
                     <div><strong>Identificador del beneficiario:</strong> <span id="integrante"></span></div>
-                    <div><strong>Total Pagos:</strong> <span id="totalPagos"></span></div>
-                    <div><strong>Máximo de Pagos:</strong> <span id="maximoPagos"></span></div>
+                    <div><strong>Pagos: </strong> <span id="totalPagos"></span> de <span id="maximoPagos"></span>
+                    <div class="progress" style="max-width: 35vh;">
+                        <div id="myProgressBar" class="progress-bar progress-bar-striped bg-success progress-bar-animated" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                    </div>    
+                    </div>
+                    <div><strong>Estado:</strong> <span id="estadoMX"></span></div>
                     <div><strong>Dirección de Adscripción:</strong> <span id="direccionads"></span></div>
                 </div>
                 <div class="bloque hidden" id="explicacionBaja">

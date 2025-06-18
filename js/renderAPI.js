@@ -41,6 +41,10 @@ function renderInfo() {
     document.getElementById('totalPagos').textContent = d.TOTAL_PAGOS;
     document.getElementById('maximoPagos').textContent = d.MAXIMO_PAGOS;
     document.getElementById('direccionads').textContent = d.DIRECCION_ADSCRIPCION;
+    // Nuevo
+    document.getElementById('estadoMX').textContent = obtenerEstadoPorClave(parseInt(d.ESTADO_ID || -1));
+    setProgress(Math.round((parseFloat(d.TOTAL_PAGOS || 1) / parseFloat(d.MAXIMO_PAGOS || 1)) * 100));
+
     if (d.SITUACION_INSCRIPCION_ACTUAL === 'BAJA') {
         if (d.EXPLICACION_MOTIVO_BAJA) {
             document.getElementById('explicacionBaja').classList.remove('hidden');
@@ -198,10 +202,10 @@ function renderEmisiones() {
             contenedorAnio.innerHTML += `
           <fieldset class="bloque"><legend><strong>Emisión #${num}</strong></legend>
             <span ${!em.FORMA_ENTREGA_APOYO || em.FORMA_ENTREGA_APOYO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Forma de pago:</b> ${em.FORMA_ENTREGA_APOYO || 'N/A'}</span>
-            <span ${!em.INSTITUCION_LIQUIDADORA || em.INSTITUCION_LIQUIDADORA.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Recibirás el pago en medio de:</b> ${em.INSTITUCION_LIQUIDADORA || 'N/A'}</span>
-            <span ${!em.PAGADO || em.PAGADO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Pago de la emisión efectuado:</b> ${em.PAGADO || 'N/A'}</span>
+            <span ${!em.INSTITUCION_LIQUIDADORA || em.INSTITUCION_LIQUIDADORA.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Recibirás el pago por medio de:</b> ${em.INSTITUCION_LIQUIDADORA || 'N/A'}</span>
+            <span ${!em.PAGADO || em.PAGADO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Pago efectuado:</b> <span class="badge text-bg-${em.PAGADO.trim() === 'NO PAGADO' ? 'danger' : 'success'}">${em.PAGADO || 'N/A'}</span></span>
             <span ${!em.FECHA_PAGO || em.FECHA_PAGO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Fecha de Pago:</b> ${em.FECHA_PAGO || 'N/A'}</span>
-            <span ${!em.ESTATUS_PAGO || em.ESTATUS_PAGO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Situación actual del pago:</b> ${em.ESTATUS_PAGO || 'N/A'}</span>
+            <span ${!em.ESTATUS_PAGO || em.ESTATUS_PAGO.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Estatus del pago:</b>  <span class="badge text-bg-${em.ESTATUS_PAGO.trim() === 'EN PROCESO DE PAGO' ? 'warning' : 'success'}">${em.ESTATUS_PAGO || 'N/A'}</span></span>
             <span ${!em.PERIODOS || em.PERIODOS.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Periodos a pagar:</b> ${obtenerPeriodoTexto(anio, num, em.PERIODOS)}</span>
             <span elem-type="sensibledata" ${!em.FECHA_PROGRAMADA_SOT || em.FECHA_PROGRAMADA_SOT.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Fecha Programada:</b> ${convertBtoT(em.FECHA_PROGRAMADA_SOT) || 'N/A'}</span>
             <span elem-type="sensibledata" ${!em.DIR_PROGRAMADA_SOT || em.DIR_PROGRAMADA_SOT.trim() === '' ? 'class="hidden"' : 'class="span-object"'}><b>Dirección Programada:</b> ${convertBtoT(em.DIR_PROGRAMADA_SOT) || 'N/A'}</span>
@@ -381,4 +385,52 @@ function renderFasesBancarizacion() {
             }
         });
     }
+}
+
+// Los estados están en claves únicas correspondientes por la INEGI
+function obtenerEstadoPorClave(clave) {
+    const estadosINEGI = {
+        1: "Aguascalientes",
+        2: "Baja California",
+        3: "Baja California Sur",
+        4: "Campeche",
+        5: "Coahuila",
+        6: "Colima",
+        7: "Chiapas",
+        8: "Chihuahua",
+        9: "Ciudad de México",
+        10: "Durango",
+        11: "Guanajuato",
+        12: "Guerrero",
+        13: "Hidalgo",
+        14: "Jalisco",
+        15: "Estado de México",
+        16: "Michoacán",
+        17: "Morelos",
+        18: "Nayarit",
+        19: "Nuevo León",
+        20: "Oaxaca",
+        21: "Puebla",
+        22: "Querétaro",
+        23: "Quintana Roo",
+        24: "San Luis Potosí",
+        25: "Sinaloa",
+        26: "Sonora",
+        27: "Tabasco",
+        28: "Tamaulipas",
+        29: "Tlaxcala",
+        30: "Veracruz",
+        31: "Yucatán",
+        32: "Zacatecas"
+    };
+
+    return estadosINEGI[clave] || "N/A";
+}
+
+
+function setProgress(percent) {
+    const bar = document.getElementById("myProgressBar");
+    bar.style.width = percent + "%";
+    bar.setAttribute("aria-valuenow", percent);
+    bar.textContent = percent + "%";
 }
