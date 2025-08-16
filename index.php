@@ -269,7 +269,7 @@
             //     return;
             // }
 
-            loading.style.display = 'fixed';
+            loading.style.display = '';
 
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
