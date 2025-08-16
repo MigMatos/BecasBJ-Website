@@ -17,6 +17,7 @@
 
     <!-- Como siempre bootstrap god dandonos sus diseñitos simples pero bonitos -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="./css/inicio.css?v=<?= $siteVersion ?>" rel="stylesheet">
 
     <!-- Open Graph (para Facebook, WhatsApp, Discord, etc) -->
@@ -37,24 +38,30 @@
 
 <body>
 
+        <!-- Mensaje de carga -->
+        <div id="loadingMessage" class="loading text-center my-4" style="display: none;">
+            <div class="spinner-border b-color-primary" role="status"></div>
+            <p>Cargando tus datos...</p>
+        </div>
+
     <div class="container my-4">
 
         <!-- Banner de imagen -->
         <header>
-            <img src="img/banner1.jpg" alt="Banner de Beca Benito Juárez">
+            <img src="img/banner2.jpg" alt="Banner de Beca Benito Juárez">
         </header>
 
-        <h1 id="obj" class="text-center mb-4">Consulta de Becas Benito Juárez</h1>
+        <h1 id="obj" class="text-center mb-4">Consulta de Estatus <br><span id="main-title">Becas BIENESTAR</span></h1>
 
         <!-- Mensaje informativo superior -->
-        <div class="alert alert-info text-center">
+        <div class="alert alert-custom-info text-center info-b-text">
             <b>Este sitio web NO ES OFICIAL y NO SUPLANTA al <a href="https://buscador.becasbenitojuarez.gob.mx/consulta/">buscador de estatus oficial</a>.</b><br>
             <a href="#seccion1footer">Lea más acerca de mí y este sitio web aquí</a><br>
-            <b>Consulta el calendario de pagos de JUNIO dando <a href="https://www.gob.mx/becasbenitojuarez/articulos/calendario-de-pago-tercer-bimestre-2025-becas-para-el-bienestar" target="_blank">click aquí</a></b>
+            <b> <!-- <a href="https://www.gob.mx/becasbenitojuarez/articulos/tutorial-para-hacer-tu-llave-mx?idiom=es" target="_blank">más información dando click aquí</a> --></b>
         </div>
 
         <!-- Toggle de tema -->
-        <div class="text-end mb-3" style="display: flex;gap: 5%;flex-wrap: nowrap;justify-content: center;">
+        <div class="text-end mb-3 utilities-div" >
             <div class="form-check form-switch" style="display: flex; flex-direction: row;">
                 <input class="form-check-input" type="checkbox" id="themeToggle" style="margin-right: 1vh;">
                 <label class="form-check-label" for="themeToggle">Modo oscuro</label>
@@ -69,9 +76,16 @@
         <div class="form-container info main-conteiner main-form">
             <form id="curpForm" onsubmit="return false;">
                 <div class="mb-3">
-                    <h3 for="curpInput" class="form-label"><b>Escribe tu CURP</b></h3>
+                    <h2 id="curpTitle" for="curpInput" class="form-label">Escribe tu CURP</h2>
+                    <div class="input-group" id="civ" sensibledata="">
+                        <span class="input-group-text" id="basic-addon1">
+                            <i class="bi bi-person-vcard"></i>
+                        </span>
+                        <input type="text" name="CURP" id="curpInput" placeholder="EJEMPLO: ABCD012345HDFABC09" pattern="^[A-Za-z0-9]{18}$" class="form-control" minlength="18" maxlength="18" required style="text-transform: uppercase;" title="Ingresa una CURP válida de 18 caracteres (solo letras y números)" oninput="this.value = this.value.replace(/\s/g, '')">
+                    </div>
+
+                    
                     <span class="form-text-curp">¿No conoces tu CURP? <a href="https://www.gob.mx/curp/" target="_blank">Consulta tu CURP aquí.</a></span>
-                    <input type="text" name="CURP" id="curpInput" pattern="^[A-Za-z0-9]{18}$" class="form-control" minlength="18" maxlength="18" required style="text-transform: uppercase;" title="Ingresa una CURP válida de 18 caracteres (solo letras y números)" oninput="this.value = this.value.replace(/\s/g, '')">
                 </div>
 
                 <div class="mb-3" style="display: flex;justify-content: center;">
@@ -81,41 +95,31 @@
                 <!-- Mensaje de errores, ya que alert es feo XD -->
                 <div class="alert alert-danger text-center hidden" id="errorAlertDiv"></div>
 
-                <button id="submitBtn" type="button" class="btn btn-primary w-100">Buscar</button>
+                <button id="submitBtn" type="button" class="btn btn-primary w-100" style="font-size: large;"><i class="bi bi-search"></i> Consultar</button>
             </form>
         </div>
 
-        <!-- Mensaje de carga -->
-        <div id="loadingMessage" class="loading text-center my-4">
-            <div class="spinner-border text-primary" role="status"></div>
-            <p>Cargando tus datos...</p>
-        </div>
 
         <!-- Contenedor de datos API -->
         <div id="apiDataContainer" style="display: none;" class="mt-4">
             <section class="info main-conteiner">
                 <section class="icons">
-                    <img id="iconbeca" src="img/becaicons/DEFAULT.jpg" alt="Icono de beca">
+                    <img id="iconbeca" data-load="sk" src="img/becaicons/DEFAULT.jpg" alt="Icono de beca">
                     <div class="estado" id="estado"></div>
                 </section>
                 <div><strong>Programa:</strong> <span id="programa"></span></div>
                 <div><strong>CURP del beneficiario:</strong> <span id="curp"></span></div>
-                <div><strong>NOTA: </strong> Tu información podría no estar actualizada (esto quiere decir que no todos los beneficiarios tienen este problema), esto puede tardar días, semanas o meses en actualizarse por la Coordinación de Becas Benito Juárez.</div>
+                <div><strong>NOTA: </strong> Tu información podría no estar actualizada, recuerda que tu información se actualiza de manera manual y por una persona real por la Coordinación de becas para el Bienestar.</div>
             </section>
 
             <section class="info main-conteiner">
-                <h2 class="pre-title"><img class="icons-conteiner" src="img/icons/becario.svg"> Información del becario</h2><br>
+                <h2 class="pre-title"><img class="icons-conteiner" src="img/icons/becario.svg"> Información del becario</h2>
                 <div class="grid">
                     <!-- <div><strong>Programa:</strong> <span id="programa"></span></div> -->
                     <div><strong>CCT:</strong> <span id="cct"></span></div>
                     <div><strong>Fecha de Nacimiento:</strong> <span id="nacimiento"></span></div>
                     <div><strong>Periodo de Incorporación:</strong> <span id="periodo"></span></div>
                     <div><strong>Identificador del beneficiario:</strong> <span id="integrante"></span></div>
-                    <div><strong>Pagos: </strong> <span id="totalPagos"></span> de <span id="maximoPagos"></span>
-                    <div class="progress" style="max-width: 35vh;">
-                        <div id="myProgressBar" class="progress-bar progress-bar-striped bg-success progress-bar-animated" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
-                    </div>    
-                    </div>
                     <div><strong>Estado:</strong> <span id="estadoMX"></span></div>
                     <div><strong>Dirección de Adscripción:</strong> <span id="direccionads"></span></div>
                 </div>
@@ -142,9 +146,21 @@
             </div>
 
             <div class="info main-conteiner mt-4">
+
+            
                 <h2 class="pre-title"><img class="icons-conteiner" src="img/icons/becasemitidas.svg"> Becas emitidas</h2>
+                
+                <pop2><strong>Progreso de pagos:</strong>
+                    <div class="progress" id="progress-bar-pagos">
+                        <div id="myProgressBar" class="progress-bar progress-bar-striped bg-success progress-bar-animated" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                    </div>    
+                    <strong><span id="totalPagos">0</span> pagos</strong> obtenidos de <strong><span id="maximoPagos">0</span> pagos</strong> totales.</pop2>
+                <br>
+                <h3 class="pre-off-title">Historial de Pagos</h3>
+
                 <section class="emisiones" id="contenedor-emisiones">
                     <!-- Emisiones dinámicas -->
+                    
                 </section>
             </div>
 
@@ -158,25 +174,24 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content modal-alerts">
             <div class="modal-header">
-                <h5 class="modal-title" id="alertModalLabel">Aviso Importante</h5>
+                <h5 class="modal-title" id="alertModalLabel">🚨 ¡Evita las estafas! 🚨</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <p class="fs-4">
-                Si te mandaron este sitio web a cambio de tu <span class="fw-bold text-uppercase">información bancaria</span>,
+                <span class="text-danger">📢 Nadie debe pedirte <span class="fw-bold text-uppercase">información bancaria,
+                información personal como tu nombre, edad, INE; antes y después de entrar a esta página.</span>
+                </span></p>
+                <p>
+                🕵🏻 Tus consultas siempre <span class="fw-bold text-uppercase">serán anónimas y nunca se almacenan</span>.
                 </p>
                 <p>
-                (o por un acortador con publicidad) así como información personal como tu nombre, edad, INE antes de entrar a esta página.
-                </p>
-                <p class="fs-4 text-danger fw-bold text-uppercase">
-                ¡LAMENTO DECIRTE QUE TE HAN ESTAFADO!
-                </p>
-                <p>
-                Este sitio web nunca pedirá <span class="fw-bold text-uppercase">tu información bancaria o dinero</span> y siempre tus consultas <span class="fw-bold text-uppercase">serán anónimas y nunca se almacenan</span>.
+                <span class="fw-bold text-uppercase">⚠️ ¡Reporta los sitios webs clones con publicidad, falsos o engañosos en nuestro correo! ⚠️<br>
+                🚫 ¡NO VENDAS TU INFORMACIÓN!</span>
                 </p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary fw-bold" data-bs-dismiss="modal">¡Entendido!</button>
             </div>
             </div>
         </div>
@@ -254,7 +269,7 @@
             //     return;
             // }
 
-            loading.style.display = 'block';
+            loading.style.display = 'fixed';
 
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
@@ -288,10 +303,6 @@
                 renderEmisiones();
                 container.style.display = 'block';
                 errorBox.classList.add("hidden");
-                const objetivo = document.getElementById("loadingMessage");
-                if (objetivo) objetivo.scrollIntoView({
-                    behavior: "smooth"
-                });
             } catch (err) {
                 errorBox.classList.remove("hidden");
                 errorBox.innerHTML = "<b>Ocurrió un error al consultar tus datos, posiblemente hay algún problema con la página de becabenitojuarez.gob.mx o mantenimiento.</b><br><b>¡Intentalo nuevamente en una hora o más tarde!</b>";
@@ -300,6 +311,12 @@
                 console.error(err)
             } finally {
                 loading.style.display = 'none';
+                setTimeout(() => {
+                    const objetivo = document.getElementById("iconbeca");
+                    if (objetivo) objetivo.scrollIntoView({
+                        behavior: "smooth"
+                    });
+                }, 100);
             }
         });
     </script>

@@ -4,10 +4,12 @@ const html = document.documentElement;
 const toggle = document.getElementById('themeToggle');
 toggle.checked = localStorage.getItem('theme') === 'dark';
 html.setAttribute('data-theme', toggle.checked ? 'dark' : 'light');
+html.setAttribute('data-bs-theme', toggle.checked ? 'dark' : 'light');
 
 toggle.addEventListener('change', () => {
     const mode = toggle.checked ? 'dark' : 'light';
     html.setAttribute('data-theme', mode);
+    html.setAttribute('data-bs-theme', mode);
     localStorage.setItem('theme', mode);
 });
 
