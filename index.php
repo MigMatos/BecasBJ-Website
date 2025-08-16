@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- HEAD -->
-    <title>Buscador de Becas Benito Juárez - NO OFICIAL</title>
+    <title>Buscador de Becas Bienestar - NO OFICIAL</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <meta name="description" content="Buscador NO OFICIAL de estatus o becas de Benito Juarez, Rita Cetina, Etc">
 
@@ -21,7 +21,7 @@
     <link href="./css/inicio.css?v=<?= $siteVersion ?>" rel="stylesheet">
 
     <!-- Open Graph (para Facebook, WhatsApp, Discord, etc) -->
-    <meta property="og:title" content="Buscador de Becas Benito Juárez - NO OFICIAL">
+    <meta property="og:title" content="Buscador de Becas Bienestar - NO OFICIAL">
     <meta property="og:description" content="Buscador NO OFICIAL de estatus o becas de Benito Juarez, Rita Cetina, Etc">
     <meta property="og:image" content="https://consultarbeca.x10.mx/img/icons/tarjeta_bienestar_2.png">
     <meta property="og:url" content="https://consultarbeca.x10.mx/">
@@ -29,7 +29,7 @@
 
     <!-- Twitter Card (opcional, para Twitter/X) -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Buscador de Becas Benito Juárez - NO OFICIAL">
+    <meta name="twitter:title" content="Buscador de Becas Bienestar - NO OFICIAL">
     <meta name="twitter:description" content="Buscador NO OFICIAL de estatus o becas de Benito Juarez, Rita Cetina, Etc">
     <meta name="twitter:image" content="https://consultarbeca.x10.mx/img/icons/tarjeta_bienestar_2.png">
     <meta name="twitter:url" content="https://consultarbeca.x10.mx/">
