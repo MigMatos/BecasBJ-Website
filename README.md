@@ -1,5 +1,10 @@
 # 📚 Portal Alternativo de Consulta de Becas Benito Juárez
 
+Hemos terminado nuestro labor ayudando a los que necesitaban esta aplicación, lamentablemente debido a
+las personas que intentaron monetizar con este repositorio o hicieron forks con malas intenciones ahora
+este servicio ha terminado, agradecemos a todos los que confiaron en este repositorio y sitio web principal.
+
+
 > **⚠️ Aviso importante:**  
 > Este **NO es un sitio oficial del Gobierno de México**.  
 > Es una herramienta comunitaria creada porque el portal oficial de la Coordinación Nacional de Becas Benito Juárez (CNBBJ) entró en mantenimiento y dejó sin información a nuevas y nuevos becarios sobre tarjetas, citas y pagos.

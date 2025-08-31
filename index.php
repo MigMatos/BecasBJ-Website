@@ -13,7 +13,7 @@
     <!-- HEAD -->
     <title>Buscador de Becas Bienestar - NO OFICIAL</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <meta name="description" content="Buscador NO OFICIAL de estatus o becas de Benito Juarez, Rita Cetina, Etc">
+    <meta name="description" content="Consulta tu estatus en las becas Benito Juárez, Beca Rita Cetina, Becas Bienestar y más apoyos para jóvenes en México 2025.">
 
     <!-- Como siempre bootstrap god dandonos sus diseñitos simples pero bonitos -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -48,7 +48,7 @@
 
         <!-- Banner de imagen -->
         <header>
-            <img src="img/banner2.jpg" alt="Banner de Beca Benito Juárez">
+            <img src="img/banner2.jpg" aalt="Consulta estatus Beca Benito Juárez, Rita Cetina, Bienestar 2025">
         </header>
 
         <h1 id="obj" class="text-center mb-4">Consulta de Estatus <br><span id="main-title">Becas BIENESTAR</span></h1>
@@ -219,6 +219,11 @@
             estaremos dejando activo el sitio hasta que finalmente vuelva a funcionar el buscador de estatus,
             en serio que horrible lo que está haciendo nuestro gobierno y más por aquellos donde la sede de atención es demasiado lejos de los beneficiarios o saber si su beca ya cayó, ¡no todos tenemos un banco cercano ni tampoco los recursos, por algo necesitan este apoyo!
             <br>
+            <br>
+            <br>
+            <p>Si eres beneficiario de las <strong>Becas Benito Juárez</strong> o buscas la 
+            <strong>Beca Rita Cetina</strong>, aquí puedes usar nuestro <strong>buscador de estatus 2025</strong> 
+            para verificar tus depósitos de becas.</p>
 
         </footer>
 
